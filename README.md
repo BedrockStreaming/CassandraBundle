@@ -12,7 +12,7 @@ Work in progress, avalaible soon.
 
 ## Usage
 
-comming soon
+coming soon
 
 ## Contributing
 
