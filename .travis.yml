@@ -4,6 +4,8 @@ php:
   - 5.5
 
 before_install:
+  # PPA for libuv-dev
+  - sudo apt-add-repository ppa:linuxjedi/ppa -y
   - sudo apt-get update
   - sudo apt-get install -y libuv-dev libssl-dev
   - cd /tmp && git clone https://github.com/datastax/php-driver.git && cd php-driver && git submodule update --init
