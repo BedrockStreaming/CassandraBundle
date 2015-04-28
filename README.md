@@ -1,16 +1,15 @@
 # CassandraBundle
 
+[![Build Status](https://travis-ci.org/M6Web/CassandraBundle.svg?branch=master)](https://travis-ci.org/M6Web/CassandraBundle)
+
 The CassandraBundle provide a Cassandra client as a Symfony service.
 
 ## Installation
 
 **NOTE :** You need to [install the offical datastax php driver](https://github.com/datastax/php-driver)
 
-Add the bundle to your composer.json file.
+Work in progress, avalaible soon.
 
-```shell
-composer require m6web/m6web/cassandra-bundle 1.0.0-alpha
-```
 ## Usage
 
 comming soon
