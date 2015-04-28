@@ -1,0 +1,25 @@
+m6web_cassandra:
+  clients:
+    client_test:
+      keyspace: 'test'
+      load_balancing: 'dc-aware-round-robin'
+      dc_options:
+        local_dc_name: 'testdc'
+        host_per_remote_dc: 3
+        remote_dc_for_local_consistency: false
+      default_consistency: 'two'
+      default_pagesize : 1000
+      contact_endpoints:
+        - '127.0.0.1'
+        - '127.0.0.2'
+        - '127.0.0.3'
+      port_endpoint: 8906
+      token_aware_routing : false
+      credentials:
+        username: 'username'
+        password: 'password'
+      ssl: true
+      default_timeout: 5
+      timeout:
+        connect: 15
+        request: 15

@@ -1,0 +1,21 @@
+m6web_cassandra:
+  clients:
+    client_test:
+      keyspace: 'test'
+      contact_endpoints:
+        - '127.0.0.1'
+        - '127.0.0.2'
+        - '127.0.0.3'
+    client_test2:
+      keyspace: 'test2'
+      load_balancing: 'dc-aware-round-robin'
+      dc_options:
+        local_dc_name: 'testdc'
+        host_per_remote_dc: 3
+        remote_dc_for_local_consistency: true
+      contact_endpoints:
+        - 127.0.0.4
+        - 127.0.0.5
+      credentials:
+        username: 'usertest'
+        password: 'passwdtest'
