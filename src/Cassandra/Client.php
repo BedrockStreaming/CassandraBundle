@@ -8,6 +8,7 @@ use Cassandra\Session;
 use Cassandra\Statement;
 use Cassandra\DefaultSession;
 use Cassandra\DefaultCluster;
+use Cassandra\SSLOptions\Builder as SSLOptionsBuilder;
 
 /**
  * Class Client
@@ -151,9 +152,14 @@ class Client implements Session
                  ->withContactPoints(implode(',', $config['contact_endpoints']))
                  ->withPort($config['port_endpoint'])
                  ->withTokenAwareRouting($config['token_aware_routing'])
-                 ->withSSL($config['ssl'])
                  ->withConnectTimeout($config['timeout']['connect'])
                  ->withRequestTimeout($config['timeout']['request']);
+
+        if (isset($config['ssl']) && $config['ssl'] === true) {
+            $ssl = new SSLOptionsBuilder();
+            $sslOption = $ssl->withVerifyFlags(\Cassandra::VERIFY_NONE)->build();
+            $cluster->withSSL($sslOption);
+        }
 
         if (array_key_exists('default_timeout', $config)) {
             $cluster->withDefaultTimeout($config['default_timeout']);
