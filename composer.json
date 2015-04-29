@@ -2,7 +2,7 @@
   "name": "m6web/cassandra-bundle",
   "type" : "symfony-bundle",
   "description": "Symfony2 bundle on top of datastax/php-driver",
-  "keywords": ["cassandra", "bundle", "C*"],
+  "keywords": ["cassandra", "bundle"],
   "license" : "MIT",
   "authors": [
     {
