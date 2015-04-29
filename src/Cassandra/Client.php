@@ -27,6 +27,11 @@ class Client implements Session
     protected $session;
 
     /**
+     * @var string
+     */
+    protected $keyspace;
+
+    /**
      * Construct the client
      *
      * Initialize cluster and aggregate the session
@@ -37,19 +42,32 @@ class Client implements Session
     {
         $this->buildCluster($config);
 
-        $session = $this->cluster->connect($config['keyspace']);
-
-        $this->setSession($session);
+        $this->session = null;
+        $this->keyspace = $config['keyspace'];
     }
 
     /**
-     * Set session
+     * Return keyspace to use with session
      *
-     * @param Session $session
+     * @return string
      */
-    public function setSession(Session $session)
+    public function getKeyspace()
     {
-        $this->session = $session;
+        return $this->keyspace;
+    }
+
+    /**
+     * Return Cassandra session
+     *
+     * @return Session
+     */
+    public function getSession()
+    {
+        if (is_null($this->session)) {
+            $this->session = $this->cluster->connect($this->getKeyspace());
+        }
+
+        return $this->session;
     }
 
     /**
@@ -64,7 +82,7 @@ class Client implements Session
      */
     public function execute(Statement $statement, ExecutionOptions $options = null)
     {
-        return $this->session->execute($statement, $options);
+        return $this->getSession()->execute($statement, $options);
     }
 
     /**
@@ -80,7 +98,7 @@ class Client implements Session
      */
     public function executeAsync(Statement $statement, ExecutionOptions $options = null)
     {
-        return $this->session->executeAsync($statement, $options);
+        return $this->getSession()->executeAsync($statement, $options);
     }
 
     /**
@@ -98,7 +116,7 @@ class Client implements Session
      */
     public function prepare($cql, ExecutionOptions $options = null)
     {
-        return $this->session->prepare($cql, $options);
+        return $this->getSession()->prepare($cql, $options);
     }
 
     /**
@@ -113,7 +131,7 @@ class Client implements Session
      */
     public function prepareAsync($cql, ExecutionOptions $options = null)
     {
-        return $this->session->prepareAsync($cql, $options);
+        return $this->getSession()->prepareAsync($cql, $options);
     }
 
     /**
@@ -125,7 +143,8 @@ class Client implements Session
      */
     public function close($timeout = null)
     {
-        $this->session->close($timeout);
+        $this->getSession()->close($timeout);
+        $this->resetSession();
     }
 
     /**
@@ -135,7 +154,16 @@ class Client implements Session
      */
     public function closeAsync()
     {
-        $this->session->closeAsync();
+        $this->getSession()->closeAsync();
+        $this->resetSession();
+    }
+
+    /**
+     * Reset cassandra session
+     */
+    protected function resetSession()
+    {
+        $this->session = null;
     }
 
     /**
