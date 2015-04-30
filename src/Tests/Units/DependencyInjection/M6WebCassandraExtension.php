@@ -233,6 +233,7 @@ class M6WebCassandraExtension extends test
 
         $parameterBag = new ParameterBag(array('kernel.debug' => true));
         $container = new ContainerBuilder($parameterBag);
+        $container->set('event_dispatcher', new \StdClass());
         $container->registerExtension($extension);
 
         $loader = new YamlFileLoader($container, new FileLocator(__DIR__.'/../../Fixtures/'));
