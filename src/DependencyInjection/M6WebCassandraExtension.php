@@ -34,6 +34,7 @@ class M6WebCassandraExtension extends Extension
         $class = 'M6Web\Bundle\CassandraBundle\Cassandra\Client';
         $definition = new Definition($class);
         $definition->addArgument($config);
+        $definition->addMethodCall('setEventDispatcher', [new Reference('event_dispatcher')]);
 
         $container->setDefinition('m6web_cassandra.client.'.$clientId, $definition);
     }

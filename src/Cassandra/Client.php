@@ -3,12 +3,14 @@ namespace M6Web\Bundle\CassandraBundle\Cassandra;
 
 use Cassandra\Cluster\Builder;
 use Cassandra\ExecutionOptions;
+use Cassandra\Future;
 use Cassandra\PreparedStatement;
 use Cassandra\Session;
 use Cassandra\Statement;
 use Cassandra\DefaultSession;
 use Cassandra\DefaultCluster;
 use Cassandra\SSLOptions\Builder as SSLOptionsBuilder;
+use M6Web\Bundle\CassandraBundle\EventDispatcher\CassandraEvent;
 
 /**
  * Class Client
@@ -33,6 +35,11 @@ class Client implements Session
     protected $keyspace;
 
     /**
+     * @var EventDispatcher
+     */
+    protected $eventDispatcher;
+
+    /**
      * Construct the client
      *
      * Initialize cluster and aggregate the session
@@ -45,6 +52,18 @@ class Client implements Session
 
         $this->session = null;
         $this->keyspace = $config['keyspace'];
+    }
+
+    /**
+     * Set event dispatcher
+     *
+     * @param Symfony\Component\EventDispatcher\EventDispatcherInterface $eventDispatcher
+     */
+    public function setEventDispatcher($eventDispatcher)
+    {
+        if ($eventDispatcher instanceof Symfony\Component\EventDispatcher\EventDispatcherInterface) {
+            $this->$eventDispatcher = $eventDispatcher;
+        }
     }
 
     /**
@@ -83,7 +102,11 @@ class Client implements Session
      */
     public function execute(Statement $statement, ExecutionOptions $options = null)
     {
-        return $this->getSession()->execute($statement, $options);
+        $event = $this->prepareEvent('execute', [$statement, $options]);
+
+        $return = $this->getSession()->execute($statement, $options);
+
+        return $this->prepareResponse($return, $event);
     }
 
     /**
@@ -99,7 +122,11 @@ class Client implements Session
      */
     public function executeAsync(Statement $statement, ExecutionOptions $options = null)
     {
-        return $this->getSession()->executeAsync($statement, $options);
+        $event = $this->prepareEvent('executeAsync', [$statement, $options]);
+
+        $return =  $this->getSession()->executeAsync($statement, $options);
+
+        return $this->prepareResponse($return, $event);
     }
 
     /**
@@ -117,7 +144,11 @@ class Client implements Session
      */
     public function prepare($cql, ExecutionOptions $options = null)
     {
-        return $this->getSession()->prepare($cql, $options);
+        $event = $this->prepareEvent('prepare', [$cql, $options]);
+
+        $return = $this->getSession()->prepare($cql, $options);
+
+        return $this->prepareResponse($return, $event);
     }
 
     /**
@@ -132,7 +163,11 @@ class Client implements Session
      */
     public function prepareAsync($cql, ExecutionOptions $options = null)
     {
-        return $this->getSession()->prepareAsync($cql, $options);
+        $event = $this->prepareEvent('prepareAsync', [$cql, $options]);
+
+        $return = $this->getSession()->prepareAsync($cql, $options);
+
+        return $this->prepareResponse($return, $event);
     }
 
     /**
@@ -219,5 +254,42 @@ class Client implements Session
         return constant('\Cassandra::CONSISTENCY_'.strtoupper($consistency));
     }
 
+    /**
+     * Initialize event
+     *
+     * @param string $command
+     * @param array  $args
+     *
+     * @return CassandraEvent
+     */
+    protected function prepareEvent($command, array $args)
+    {
+        $event = new CassandraEvent();
+        $event->setCommand($command)
+              ->setKeyspace($this->getKeyspace())
+              ->setArguments($args)
+              ->setExecutionStart();
 
+        return $event;
+    }
+
+    /**
+     * Prepare response to return
+     *
+     * @param mixed          $response
+     * @param CassandraEvent $event
+     *
+     * @return mixed
+     */
+    protected function prepareResponse($response, CassandraEvent $event)
+    {
+        if ($response instanceof Future) {
+            return new FutureResponse($response, $event, $this->eventDispatcher);
+        }
+
+        $event->setExecutionStop();
+        $this->eventDispatcher->dispatch(CassandraEvent::EVENT_NAME, $event);
+
+        return $response;
+    }
 }
