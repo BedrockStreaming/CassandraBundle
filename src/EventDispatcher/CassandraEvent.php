@@ -43,10 +43,14 @@ class CassandraEvent extends Event
 
     /**
      * @param string $keyspace
+     *
+     * @return CassandraEvent
      */
     public function setKeyspace($keyspace)
     {
         $this->keyspace = $keyspace;
+
+        return $this;
     }
 
     /**
@@ -67,10 +71,14 @@ class CassandraEvent extends Event
 
     /**
      * @param array $arguments
+     *
+     * @return CassandraEvent
      */
     public function setArguments(array $arguments)
     {
         $this->arguments = $arguments;
+
+        return $this;
     }
 
     /**
@@ -83,10 +91,14 @@ class CassandraEvent extends Event
 
     /**
      * @param string $command
+     *
+     * @return CassandraEvent
      */
     public function setCommand($command)
     {
         $this->command = $command;
+
+        return $this;
     }
 
     /**
@@ -99,19 +111,27 @@ class CassandraEvent extends Event
 
     /**
      * Set execution start of a cassandra request
+     *
+     * @return CassandraEvent
      */
     public function setExecutionStart()
     {
         $this->executionStart = microtime(true);
+
+        return $this;
     }
 
     /**
      * Stop the execution of cassandra request
      * and set the request execution time
+     *
+     * @return CassandraEvent
      */
     public function setExecutionStop()
     {
         $this->executionTime = microtime(true) - $this->executionStart;
+
+        return $this;
     }
 
     /**
