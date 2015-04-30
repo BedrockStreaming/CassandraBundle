@@ -8,6 +8,8 @@ use Symfony\Component\EventDispatcher\Event;
  */
 class CassandraEvent extends Event
 {
+    const EVENT_NAME = 'm6web.cassandra';
+
     /**
      * Cassandra keyspace where event was dispatched
      *
