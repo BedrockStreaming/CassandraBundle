@@ -261,10 +261,14 @@ class Client implements Session
      * @param string $command
      * @param array  $args
      *
-     * @return CassandraEvent
+     * @return CassandraEvent|null Return null if no eventDispatcher available
      */
     protected function prepareEvent($command, array $args)
     {
+        if (is_null($this->eventDispatcher)) {
+            return null;
+        }
+
         $event = new CassandraEvent();
         $event->setCommand($command)
               ->setKeyspace($this->getKeyspace())
@@ -277,13 +281,17 @@ class Client implements Session
     /**
      * Prepare response to return
      *
-     * @param mixed          $response
-     * @param CassandraEvent $event
+     * @param mixed               $response
+     * @param CassandraEvent|null $event
      *
      * @return mixed
      */
-    protected function prepareResponse($response, CassandraEvent $event)
+    protected function prepareResponse($response, CassandraEvent $event = null)
     {
+        if (is_null($event)) {
+            return $response;
+        }
+
         if ($response instanceof Future) {
             return new FutureResponse($response, $event, $this->eventDispatcher);
         }
