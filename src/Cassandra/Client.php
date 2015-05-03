@@ -10,6 +10,7 @@ use Cassandra\Statement;
 use Cassandra\DefaultSession;
 use Cassandra\DefaultCluster;
 use Cassandra\SSLOptions\Builder as SSLOptionsBuilder;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use M6Web\Bundle\CassandraBundle\EventDispatcher\CassandraEvent;
 
 /**
@@ -57,11 +58,11 @@ class Client implements Session
     /**
      * Set event dispatcher
      *
-     * @param Symfony\Component\EventDispatcher\EventDispatcherInterface $eventDispatcher
+     * @param EventDispatcherInterface $eventDispatcher
      */
-    public function setEventDispatcher($eventDispatcher)
+    public function setEventDispatcher(EventDispatcherInterface $eventDispatcher)
     {
-        if ($eventDispatcher instanceof Symfony\Component\EventDispatcher\EventDispatcherInterface) {
+        if ($eventDispatcher instanceof EventDispatcherInterface) {
             $this->$eventDispatcher = $eventDispatcher;
         }
     }

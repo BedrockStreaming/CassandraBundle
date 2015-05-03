@@ -3,6 +3,7 @@ namespace M6Web\Bundle\CassandraBundle\Cassandra;
 
 use Cassandra\Future;
 use M6Web\Bundle\CassandraBundle\EventDispatcher\CassandraEvent;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
  * Class FutureResponse
@@ -27,11 +28,11 @@ class FutureResponse implements Future
     protected $future;
 
     /**
-     * @param Future          $future
-     * @param CassandraEvent  $event
-     * @param EventDispatcher $eventDispatcher
+     * @param Future                   $future
+     * @param CassandraEvent           $event
+     * @param EventDispatcherInterface $eventDispatcher
      */
-    public function __construct(Future $future, CassandraEvent $event, $eventDispatcher)
+    public function __construct(Future $future, CassandraEvent $event, EventDispatcherInterface $eventDispatcher)
     {
         $this->future          = $future;
         $this->event           = $event;
