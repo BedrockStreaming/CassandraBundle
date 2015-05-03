@@ -103,11 +103,7 @@ class Client implements Session
      */
     public function execute(Statement $statement, ExecutionOptions $options = null)
     {
-        $event = $this->prepareEvent('execute', [$statement, $options]);
-
-        $return = $this->getSession()->execute($statement, $options);
-
-        return $this->prepareResponse($return, $event);
+        return $this->send('execute', [$statement, $options]);
     }
 
     /**
@@ -123,11 +119,7 @@ class Client implements Session
      */
     public function executeAsync(Statement $statement, ExecutionOptions $options = null)
     {
-        $event = $this->prepareEvent('executeAsync', [$statement, $options]);
-
-        $return =  $this->getSession()->executeAsync($statement, $options);
-
-        return $this->prepareResponse($return, $event);
+        return $this->send('executeAsync', [$statement, $options]);
     }
 
     /**
@@ -145,11 +137,7 @@ class Client implements Session
      */
     public function prepare($cql, ExecutionOptions $options = null)
     {
-        $event = $this->prepareEvent('prepare', [$cql, $options]);
-
-        $return = $this->getSession()->prepare($cql, $options);
-
-        return $this->prepareResponse($return, $event);
+        return $this->send('prepare', [$cql, $options]);
     }
 
     /**
@@ -164,11 +152,7 @@ class Client implements Session
      */
     public function prepareAsync($cql, ExecutionOptions $options = null)
     {
-        $event = $this->prepareEvent('prepareAsync', [$cql, $options]);
-
-        $return = $this->getSession()->prepareAsync($cql, $options);
-
-        return $this->prepareResponse($return, $event);
+        return $this->send('prepareAsync', [$cql, $options]);
     }
 
     /**
@@ -300,5 +284,22 @@ class Client implements Session
         $this->eventDispatcher->dispatch(CassandraEvent::EVENT_NAME, $event);
 
         return $response;
+    }
+
+    /**
+     * Send command to cassandra session
+     *
+     * @param string $command
+     * @param array  $arguments
+     *
+     * @return mixed
+     */
+    protected function send($command, array $arguments)
+    {
+        $event = $this->prepareEvent($command, $arguments);
+
+        $return = call_user_func_array([$this->getSession(), $command], $arguments);
+
+        return $this->prepareResponse($return, $event);
     }
 }
