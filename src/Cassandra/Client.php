@@ -79,7 +79,7 @@ class Client implements Session
      *
      * @throws \Cassandra\Exception
      *
-     * @return \Cassandra\Future  execution result
+     * @return \Cassandra\Rows execution result
      */
     public function execute(Statement $statement, ExecutionOptions $options = null)
     {
