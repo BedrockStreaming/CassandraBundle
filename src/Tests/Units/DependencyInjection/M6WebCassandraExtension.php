@@ -209,6 +209,18 @@ class M6WebCassandraExtension extends test
             ->isInstanceOf('\InvalidArgumentException');
     }
 
+    public function testConfigurator()
+    {
+        $container = $this->getContainerForConfiguation('default-config');
+        $container->compile();
+
+        $this
+            ->object($client = $container->get('m6web_cassandra.client.client_test'))
+                ->isInstanceOf('M6Web\Bundle\CassandraBundle\Cassandra\Client')
+            ->object($client->getCluster())
+                ->isInstanceOf('Cassandra\DefaultCluster');
+    }
+
     protected function unexpectedConfigValueDataProvider()
     {
         return [
@@ -241,7 +253,7 @@ class M6WebCassandraExtension extends test
 
         $parameterBag = new ParameterBag(array('kernel.debug' => true));
         $container = new ContainerBuilder($parameterBag);
-        $container->set('event_dispatcher', new \StdClass());
+        $container->set('event_dispatcher', new \mock\Symfony\Component\EventDispatcher\EventDispatcherInterface());
         $container->registerExtension($extension);
 
         $loader = new YamlFileLoader($container, new FileLocator(__DIR__.'/../../Fixtures/'));

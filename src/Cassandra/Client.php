@@ -1,15 +1,13 @@
 <?php
 namespace M6Web\Bundle\CassandraBundle\Cassandra;
 
-use Cassandra\Cluster\Builder;
 use Cassandra\ExecutionOptions;
 use Cassandra\Future;
 use Cassandra\PreparedStatement;
 use Cassandra\Session;
 use Cassandra\Statement;
 use Cassandra\DefaultSession;
-use Cassandra\DefaultCluster;
-use Cassandra\SSLOptions\Builder as SSLOptionsBuilder;
+use Cassandra\Cluster;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use M6Web\Bundle\CassandraBundle\EventDispatcher\CassandraEvent;
 
@@ -21,7 +19,12 @@ use M6Web\Bundle\CassandraBundle\EventDispatcher\CassandraEvent;
 class Client implements Session
 {
     /**
-     * @var DefaultCluster
+     * @var array
+     */
+    protected $config;
+
+    /**
+     * @var Cluster
      */
     protected $cluster;
 
@@ -49,8 +52,7 @@ class Client implements Session
      */
     public function __construct(array $config)
     {
-        $this->buildCluster($config);
-
+        $this->config = $config;
         $this->session = null;
         $this->keyspace = $config['keyspace'];
     }
@@ -63,8 +65,36 @@ class Client implements Session
     public function setEventDispatcher(EventDispatcherInterface $eventDispatcher)
     {
         if ($eventDispatcher instanceof EventDispatcherInterface) {
-            $this->$eventDispatcher = $eventDispatcher;
+            $this->eventDispatcher = $eventDispatcher;
         }
+    }
+
+    /**
+     * Set cluster
+     *
+     * @param Cluster $cluster
+     */
+    public function setCluster(Cluster $cluster)
+    {
+        $this->cluster = $cluster;
+    }
+
+    /**
+     * @return Cluster
+     */
+    public function getCluster()
+    {
+        return $this->cluster;
+    }
+
+    /**
+     * Return client configuration
+     *
+     * @return array
+     */
+    public function getConfig()
+    {
+        return $this->config;
     }
 
     /**
@@ -185,58 +215,6 @@ class Client implements Session
     protected function resetSession()
     {
         $this->session = null;
-    }
-
-    /**
-     * Build cassandra cluster
-     *
-     * @param array $config
-     */
-    protected function buildCluster(array $config)
-    {
-        $cluster = new Builder();
-        $cluster ->withDefaultConsistency($this->getConsistency($config['default_consistency']))
-                 ->withDefaultPageSize($config['default_pagesize'])
-                 ->withContactPoints(implode(',', $config['contact_endpoints']))
-                 ->withPort($config['port_endpoint'])
-                 ->withTokenAwareRouting($config['token_aware_routing'])
-                 ->withConnectTimeout($config['timeout']['connect'])
-                 ->withRequestTimeout($config['timeout']['request']);
-
-        if (isset($config['ssl']) && $config['ssl'] === true) {
-            $ssl = new SSLOptionsBuilder();
-            $sslOption = $ssl->withVerifyFlags(\Cassandra::VERIFY_NONE)->build();
-            $cluster->withSSL($sslOption);
-        }
-
-        if (array_key_exists('default_timeout', $config)) {
-            $cluster->withDefaultTimeout($config['default_timeout']);
-        }
-
-        if ($config['load_balancing'] == 'round-robin') {
-            $cluster->withRoundRobinLoadBalancingPolicy(\Cassandra::LOAD_BALANCING_ROUND_ROBIN);
-        } else {
-            $dcOption = $config['dc_options'];
-            $cluster->withDatacenterAwareRoundRobinLoadBalancingPolicy($dcOption['local_dc_name'], $dcOption['host_per_remote_dc'], $dcOption['remote_dc_for_local_consistency']);
-        }
-
-        if (array_key_exists('credentials', $config)) {
-            $cluster->withCredentials($config['credentials']['username'], $config['credentials']['password']);
-        }
-
-        $this->cluster = $cluster->build();
-    }
-
-    /**
-     * Return cassandra consistency value
-     *
-     * @param string $consistency
-     *
-     * @return mixed
-     */
-    protected function getConsistency($consistency)
-    {
-        return constant('\Cassandra::CONSISTENCY_'.strtoupper($consistency));
     }
 
     /**
