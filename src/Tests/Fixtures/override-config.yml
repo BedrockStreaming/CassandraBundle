@@ -1,4 +1,5 @@
 m6web_cassandra:
+  dispatch_events: false
   clients:
     client_test:
       keyspace: 'test'
