@@ -13,7 +13,7 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 class FutureResponse implements Future
 {
     /**
-     * @var EventDispatcher
+     * @var EventDispatcherInterface
      */
     protected $eventDispatcher;
 
@@ -23,7 +23,7 @@ class FutureResponse implements Future
     protected $event;
 
     /**
-     * @var Futurer
+     * @var Future
      */
     protected $future;
 
