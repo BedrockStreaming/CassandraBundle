@@ -39,7 +39,7 @@ class Client implements Session
     protected $keyspace;
 
     /**
-     * @var EventDispatcher
+     * @var EventDispatcherInterface
      */
     protected $eventDispatcher;
 
