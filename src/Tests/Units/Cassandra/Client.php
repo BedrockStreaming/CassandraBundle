@@ -149,8 +149,8 @@ class Client extends test
     protected function getClusterConfig()
     {
         return [
-            'keyspace' => 'test'
-            , 'contact_endpoints' => ['127.0.0.1']
+            'keyspace' => 'test',
+            'contact_endpoints' => ['127.0.0.1']
         ];
     }
 
