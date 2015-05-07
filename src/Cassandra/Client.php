@@ -64,9 +64,7 @@ class Client implements Session
      */
     public function setEventDispatcher(EventDispatcherInterface $eventDispatcher)
     {
-        if ($eventDispatcher instanceof EventDispatcherInterface) {
-            $this->eventDispatcher = $eventDispatcher;
-        }
+        $this->eventDispatcher = $eventDispatcher;
     }
 
     /**
