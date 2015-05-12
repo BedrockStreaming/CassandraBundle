@@ -43,7 +43,7 @@ class Configurator
         }
 
         if ($config['load_balancing'] == 'round-robin') {
-            $cluster->withRoundRobinLoadBalancingPolicy(\Cassandra::LOAD_BALANCING_ROUND_ROBIN);
+            $cluster->withRoundRobinLoadBalancingPolicy();
         } else {
             $dcOption = $config['dc_options'];
             $cluster->withDatacenterAwareRoundRobinLoadBalancingPolicy($dcOption['local_dc_name'], $dcOption['host_per_remote_dc'], $dcOption['remote_dc_for_local_consistency']);
