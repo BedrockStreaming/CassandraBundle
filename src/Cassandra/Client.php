@@ -1,14 +1,15 @@
 <?php
 namespace M6Web\Bundle\CassandraBundle\Cassandra;
 
-use Cassandra\Cluster\Builder;
 use Cassandra\ExecutionOptions;
+use Cassandra\Future;
 use Cassandra\PreparedStatement;
 use Cassandra\Session;
 use Cassandra\Statement;
 use Cassandra\DefaultSession;
-use Cassandra\DefaultCluster;
-use Cassandra\SSLOptions\Builder as SSLOptionsBuilder;
+use Cassandra\Cluster;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use M6Web\Bundle\CassandraBundle\EventDispatcher\CassandraEvent;
 
 /**
  * Class Client
@@ -18,7 +19,12 @@ use Cassandra\SSLOptions\Builder as SSLOptionsBuilder;
 class Client implements Session
 {
     /**
-     * @var DefaultCluster
+     * @var array
+     */
+    protected $config;
+
+    /**
+     * @var Cluster
      */
     protected $cluster;
 
@@ -33,6 +39,11 @@ class Client implements Session
     protected $keyspace;
 
     /**
+     * @var EventDispatcherInterface
+     */
+    protected $eventDispatcher;
+
+    /**
      * Construct the client
      *
      * Initialize cluster and aggregate the session
@@ -41,10 +52,47 @@ class Client implements Session
      */
     public function __construct(array $config)
     {
-        $this->buildCluster($config);
-
+        $this->config = $config;
         $this->session = null;
         $this->keyspace = $config['keyspace'];
+    }
+
+    /**
+     * Set event dispatcher
+     *
+     * @param EventDispatcherInterface $eventDispatcher
+     */
+    public function setEventDispatcher(EventDispatcherInterface $eventDispatcher)
+    {
+        $this->eventDispatcher = $eventDispatcher;
+    }
+
+    /**
+     * Set cluster
+     *
+     * @param Cluster $cluster
+     */
+    public function setCluster(Cluster $cluster)
+    {
+        $this->cluster = $cluster;
+    }
+
+    /**
+     * @return Cluster
+     */
+    public function getCluster()
+    {
+        return $this->cluster;
+    }
+
+    /**
+     * Return client configuration
+     *
+     * @return array
+     */
+    public function getConfig()
+    {
+        return $this->config;
     }
 
     /**
@@ -83,7 +131,7 @@ class Client implements Session
      */
     public function execute(Statement $statement, ExecutionOptions $options = null)
     {
-        return $this->getSession()->execute($statement, $options);
+        return $this->send('execute', [$statement, $options]);
     }
 
     /**
@@ -99,7 +147,7 @@ class Client implements Session
      */
     public function executeAsync(Statement $statement, ExecutionOptions $options = null)
     {
-        return $this->getSession()->executeAsync($statement, $options);
+        return $this->send('executeAsync', [$statement, $options]);
     }
 
     /**
@@ -117,7 +165,7 @@ class Client implements Session
      */
     public function prepare($cql, ExecutionOptions $options = null)
     {
-        return $this->getSession()->prepare($cql, $options);
+        return $this->send('prepare', [$cql, $options]);
     }
 
     /**
@@ -132,7 +180,7 @@ class Client implements Session
      */
     public function prepareAsync($cql, ExecutionOptions $options = null)
     {
-        return $this->getSession()->prepareAsync($cql, $options);
+        return $this->send('prepareAsync', [$cql, $options]);
     }
 
     /**
@@ -168,56 +216,66 @@ class Client implements Session
     }
 
     /**
-     * Build cassandra cluster
+     * Initialize event
      *
-     * @param array $config
+     * @param string $command
+     * @param array  $args
+     *
+     * @return CassandraEvent|null Return null if no eventDispatcher available
      */
-    protected function buildCluster(array $config)
+    protected function prepareEvent($command, array $args)
     {
-        $cluster = new Builder();
-        $cluster ->withDefaultConsistency($this->getConsistency($config['default_consistency']))
-                 ->withDefaultPageSize($config['default_pagesize'])
-                 ->withContactPoints(implode(',', $config['contact_endpoints']))
-                 ->withPort($config['port_endpoint'])
-                 ->withTokenAwareRouting($config['token_aware_routing'])
-                 ->withConnectTimeout($config['timeout']['connect'])
-                 ->withRequestTimeout($config['timeout']['request']);
-
-        if (isset($config['ssl']) && $config['ssl'] === true) {
-            $ssl = new SSLOptionsBuilder();
-            $sslOption = $ssl->withVerifyFlags(\Cassandra::VERIFY_NONE)->build();
-            $cluster->withSSL($sslOption);
+        if (is_null($this->eventDispatcher)) {
+            return null;
         }
 
-        if (array_key_exists('default_timeout', $config)) {
-            $cluster->withDefaultTimeout($config['default_timeout']);
-        }
+        $event = new CassandraEvent();
+        $event->setCommand($command)
+              ->setKeyspace($this->getKeyspace())
+              ->setArguments($args)
+              ->setExecutionStart();
 
-        if ($config['load_balancing'] == 'round-robin') {
-            $cluster->withRoundRobinLoadBalancingPolicy(\Cassandra::LOAD_BALANCING_ROUND_ROBIN);
-        } else {
-            $dcOption = $config['dc_options'];
-            $cluster->withDatacenterAwareRoundRobinLoadBalancingPolicy($dcOption['local_dc_name'], $dcOption['host_per_remote_dc'], $dcOption['remote_dc_for_local_consistency']);
-        }
-
-        if (array_key_exists('credentials', $config)) {
-            $cluster->withCredentials($config['credentials']['username'], $config['credentials']['password']);
-        }
-
-        $this->cluster = $cluster->build();
+        return $event;
     }
 
     /**
-     * Return cassandra consistency value
+     * Prepare response to return
      *
-     * @param string $consistency
+     * @param mixed               $response
+     * @param CassandraEvent|null $event
      *
      * @return mixed
      */
-    protected function getConsistency($consistency)
+    protected function prepareResponse($response, CassandraEvent $event = null)
     {
-        return constant('\Cassandra::CONSISTENCY_'.strtoupper($consistency));
+        if (is_null($event)) {
+            return $response;
+        }
+
+        if ($response instanceof Future) {
+            return new FutureResponse($response, $event, $this->eventDispatcher);
+        }
+
+        $event->setExecutionStop();
+        $this->eventDispatcher->dispatch(CassandraEvent::EVENT_NAME, $event);
+
+        return $response;
     }
 
+    /**
+     * Send command to cassandra session
+     *
+     * @param string $command
+     * @param array  $arguments
+     *
+     * @return mixed
+     */
+    protected function send($command, array $arguments)
+    {
+        $event = $this->prepareEvent($command, $arguments);
 
+        $return = call_user_func_array([$this->getSession(), $command], $arguments);
+
+        return $this->prepareResponse($return, $event);
+    }
 }

@@ -22,6 +22,7 @@ class Configuration implements ConfigurationInterface
 
         $rootNode
             ->children()
+                ->booleanNode('dispatch_events')->defaultValue(true)->end()
                 ->arrayNode('clients')
                     ->isRequired()
                     ->requiresAtLeastOneElement()
