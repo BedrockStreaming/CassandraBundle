@@ -165,7 +165,11 @@ class Client implements Session
      */
     public function prepare($cql, ExecutionOptions $options = null)
     {
-        return $this->send('prepare', [$cql, $options]);
+        if (is_null($options)) {
+            return $this->send('prepare', [$cql]);
+        } else {
+            return $this->send('prepare', [$cql, $options]);
+        }
     }
 
     /**
@@ -180,7 +184,11 @@ class Client implements Session
      */
     public function prepareAsync($cql, ExecutionOptions $options = null)
     {
-        return $this->send('prepareAsync', [$cql, $options]);
+        if (is_null($options)) {
+            return $this->send('prepareAsync', [$cql]);
+        } else {
+            return $this->send('prepareAsync', [$cql, $options]);
+        }
     }
 
     /**
