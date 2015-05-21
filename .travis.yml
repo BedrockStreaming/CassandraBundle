@@ -3,6 +3,10 @@ language: php
 php:
   - 5.5
 
+branches:
+  only:
+    - master
+
 before_install:
   # PPA for libuv-dev
   - sudo apt-add-repository ppa:linuxjedi/ppa -y
