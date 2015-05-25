@@ -35,6 +35,7 @@ class Configuration implements ConfigurationInterface
                             ->thenInvalid('"dc-aware-round-robin" load balancing option require a "dc_options" entry in your configuration')
                         ->end()
                         ->children()
+                            ->booleanNode('persistent_sessions')->defaultValue(true)->end()
                             ->scalarNode('keyspace')->isRequired()->cannotBeEmpty()->end()
                             ->scalarNode('load_balancing')
                                 ->defaultValue('round-robin')

@@ -21,10 +21,12 @@ class M6WebCassandraExtension extends test
             ->boolean($container->has('m6web_cassandra.client.client_test'))
                 ->isTrue()
             ->array($arguments = $container->getDefinition('m6web_cassandra.client.client_test')->getArgument(0))
-                ->hasSize(11)
-                ->hasKeys(['keyspace', 'contact_endpoints', 'load_balancing', 'default_consistency', 'default_pagesize', 'port_endpoint', 'token_aware_routing', 'ssl', 'timeout', 'retries'])
+                ->hasSize(12)
+                ->hasKeys($this->getDefaultConfigKeys())
                 ->notHasKeys(['default_timeout'])
             ->boolean($arguments['dispatch_events'])
+                ->isTrue()
+            ->boolean($arguments['persistent_sessions'])
                 ->isTrue()
             ->string($arguments['keyspace'])
                 ->isEqualTo('test')
@@ -71,9 +73,11 @@ class M6WebCassandraExtension extends test
             ->boolean($container->has('m6web_cassandra.client.client_test'))
                 ->isTrue()
             ->array($arguments = $container->getDefinition('m6web_cassandra.client.client_test')->getArgument(0))
-                ->hasSize(14)
-                ->hasKeys(['keyspace', 'contact_endpoints', 'load_balancing', 'default_consistency', 'default_pagesize', 'port_endpoint', 'token_aware_routing', 'ssl', 'timeout', 'credentials', 'default_timeout', 'dc_options', 'retries'])
+                ->hasSize(15)
+                ->hasKeys($this->getDefaultConfigKeys(['credentials', 'default_timeout', 'dc_options']))
             ->boolean($arguments['dispatch_events'])
+                ->isFalse()
+            ->boolean($arguments['persistent_sessions'])
                 ->isFalse()
             ->string($arguments['keyspace'])
                 ->isEqualTo('test')
@@ -138,8 +142,8 @@ class M6WebCassandraExtension extends test
             ->boolean($container->has('m6web_cassandra.client.client_test'))
                 ->isTrue()
             ->array($arguments = $container->getDefinition('m6web_cassandra.client.client_test')->getArgument(0))
-                ->hasSize(11)
-                ->hasKeys(['keyspace', 'contact_endpoints', 'load_balancing', 'default_consistency', 'default_pagesize', 'port_endpoint', 'token_aware_routing', 'ssl', 'timeout', 'retries'])
+                ->hasSize(12)
+                ->hasKeys($this->getDefaultConfigKeys())
             ->boolean($arguments['dispatch_events'])
                 ->isTrue()
             ->string($arguments['keyspace'])
@@ -155,8 +159,8 @@ class M6WebCassandraExtension extends test
             ->boolean($container->has('m6web_cassandra.client.client_test2'))
                 ->isTrue()
             ->array($arguments2 = $container->getDefinition('m6web_cassandra.client.client_test2')->getArgument(0))
-                ->hasSize(13)
-                ->hasKeys(['keyspace', 'contact_endpoints', 'load_balancing', 'default_consistency', 'default_pagesize', 'port_endpoint', 'token_aware_routing', 'ssl', 'timeout', 'credentials', 'dc_options'])
+                ->hasSize(14)
+                ->hasKeys($this->getDefaultConfigKeys(['credentials', 'dc_options']))
             ->boolean($arguments['dispatch_events'])
                 ->isTrue()
             ->string($arguments2['keyspace'])
@@ -268,5 +272,25 @@ class M6WebCassandraExtension extends test
         $loader->load($fixtureName.'.yml');
 
         return $container;
+    }
+
+    protected function getDefaultConfigKeys(array $keySup = [])
+    {
+            return array_merge(
+                [
+                'persistent_sessions',
+                'keyspace',
+                'contact_endpoints',
+                'load_balancing',
+                'default_consistency',
+                'default_pagesize',
+                'port_endpoint',
+                'token_aware_routing',
+                'ssl',
+                'timeout',
+                'retries'
+                ],
+                $keySup
+            );
     }
 }

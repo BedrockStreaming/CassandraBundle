@@ -30,7 +30,8 @@ class Configurator
             ->withPort($config['port_endpoint'])
             ->withTokenAwareRouting($config['token_aware_routing'])
             ->withConnectTimeout($config['timeout']['connect'])
-            ->withRequestTimeout($config['timeout']['request']);
+            ->withRequestTimeout($config['timeout']['request'])
+            ->withPersistentSessions($config['persistent_sessions']);
 
         if (isset($config['ssl']) && $config['ssl'] === true) {
             $ssl = new SSLOptionsBuilder();
