@@ -1,0 +1,69 @@
+{% extends 'WebProfilerBundle:Profiler:layout.html.twig' %}
+
+{% block toolbar %}
+    {% set icon %}
+    <img width="28" height="28" alt="Cassandra" style="vertical-align: middle; margin-right: 5px;" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAIAAAD9b0jDAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH3wUHECAI/fK8cwAABLJJREFUSMeNVj1IXE8Qn30fKjnFExQ5USyuSKN28aOIiGChTQ6ijWgRYrAVQRAtlEMQsY4oWthZaGFlIZJIPggIIuER8DMEhWju/MDz7t7b93Z3Uoysp8nf/Kd4vJ3d+e3szG9mlyEi5AgNGWNKKaWUZVlSStM0lVKGYUgpDcNARMYYYwz+Q1guqFKK4BDRsizagzHGOc/Ly6PN4H8I+9NTKSVjzDTNvxrQNo+DWg/GQgjbthOJxMzMzLt372zbjkaj5eXlhYWF4XA4HA43NDRUV1f/AxdzRCmVyWSGh4cBYGhoKJPJ4B+yvb39/v17z/Nofa6t/gc9yGaziUSisLCwpaXF9/10Ok1Tvu9LKSksiBgEASKenp5eXV1JKX/+/Dk9Pe04DiK6rkuL7zx1HKegoKC/vz8IArKn/aWUnHP6Ib1Syvd9IQTnfHt7GwBmZ2d93ycTKaUhhAAA13Xb29tra2tnZmYoRZxzKSUA/Pr1K5lMEpkYYwRnWdbo6OinT59SqRRlYm9vLx6Pe54HAEB+9fb20pznecRQzvnbt2+rqqoo9OFweHJyUghBDp6dneXn5wOAYRiaarZtf/v2DRFvgSzLGh4eJv85557nRaNRAAiFQrFYLBaLhcNhAKisrHRdVwhxc3NzfHy8uLhIegAYHx8/PDwUQtzGdGRkBAD29vbIC0R8+fKlaZoDAwOpVIp2EkJMTU0BQGtrKyWQc766umqaZkVFBWNsbGyMsqqUAkSMRCKRSISMLy8vd3Z2AKCpqYlSRHrKQ19fHwB8/vw5m80iYklJSVFRESLW1tYCwNbWlu/7QRBAIpEAgK6uLk2DN2/eAEAymSSWaL0Qwvf9w8PDy8tLcnZhYWFlZcX3/aurq3g8rpQiwsHR0REAvH79Whu3trZWVVURima15pOUUvNX6zWfKMmGUgoAfN+neAdBYNs28YwWUYuhFCMiEYs6jhBCK29bCWOMMSMUCgHAwcEBUcqyrLq6utPT093dXc0Y6nuImEqlOjo65ufnydiyrFzf72qfc15RUQEAnudRZr5//w4AT58+FUJQTNPpNGXm2bNnAOA4jj47lSyx+672EbGnpwcAlpeXtXZiYgIAGhsbHcchYh4dHcViMcbY4OAghYWIwTnf2NigUN5rKGdnZ4ZhNDc3I2Imk6HjdHd301FKSkpKS0vp/8WLF0EQUCtQSrmue3JysrOz86CTAa2or68HgLm5Odd1pZSU9x8/fnR2dkaj0bKyslgs9vXrV2JMLn/n5uYe9D1EhCAIPM+7vr62bfvJkyeO4xDdlFIErUVKmc1maYq+8Xh8f39ft7Q7UDqslHJtbY048fHjR51TfVK9hxCCetDU1NTq6qpuhvdANWld1/3w4QMxbGxs7Pz8HBFvbm5oAR384uKCiPX8+fPNzU2qdM38e6C5uTs5OWlrawOA8vLyV69era2tUb1SiJeWlmpqaurr60lJVg/cvPM0t8gQ8cuXL93d3ZFIJPc2C4VCXV1d6+vrdPf8iaXl4RVNRUVfAEin08lkMpvNVlZWFhcX63rJz89/5K7+y72vnyf6JWKaJpU5FX7uQ+bfoBqRXjj6taP1uqE8/qr4DVaxgYoJ6EinAAAAAElFTkSuQmCC"/>
+    {% endset %}
+    {% set text %}
+    {{ collector.commands | length }} commands (avg : {{ collector.avgexecutiontime|number_format(4) }} - total : {{ collector.totalexecutiontime|number_format(4) }})
+    {% endset %}
+    {% include 'WebProfilerBundle:Profiler:toolbar_item.html.twig' with { 'link': true } %}
+{% endblock %}
+
+{% block head %}
+    {{ parent() }}
+{% endblock %}
+
+{% block menu %}
+    <span class="label">
+    <span class="icon">{% spaceless %}
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAIAAAD9b0jDAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH3wUHECAI/fK8cwAABLJJREFUSMeNVj1IXE8Qn30fKjnFExQ5USyuSKN28aOIiGChTQ6ijWgRYrAVQRAtlEMQsY4oWthZaGFlIZJIPggIIuER8DMEhWju/MDz7t7b93Z3Uoysp8nf/Kd4vJ3d+e3szG9mlyEi5AgNGWNKKaWUZVlSStM0lVKGYUgpDcNARMYYYwz+Q1guqFKK4BDRsizagzHGOc/Ly6PN4H8I+9NTKSVjzDTNvxrQNo+DWg/GQgjbthOJxMzMzLt372zbjkaj5eXlhYWF4XA4HA43NDRUV1f/AxdzRCmVyWSGh4cBYGhoKJPJ4B+yvb39/v17z/Nofa6t/gc9yGaziUSisLCwpaXF9/10Ok1Tvu9LKSksiBgEASKenp5eXV1JKX/+/Dk9Pe04DiK6rkuL7zx1HKegoKC/vz8IArKn/aWUnHP6Ib1Syvd9IQTnfHt7GwBmZ2d93ycTKaUhhAAA13Xb29tra2tnZmYoRZxzKSUA/Pr1K5lMEpkYYwRnWdbo6OinT59SqRRlYm9vLx6Pe54HAEB+9fb20pznecRQzvnbt2+rqqoo9OFweHJyUghBDp6dneXn5wOAYRiaarZtf/v2DRFvgSzLGh4eJv85557nRaNRAAiFQrFYLBaLhcNhAKisrHRdVwhxc3NzfHy8uLhIegAYHx8/PDwUQtzGdGRkBAD29vbIC0R8+fKlaZoDAwOpVIp2EkJMTU0BQGtrKyWQc766umqaZkVFBWNsbGyMsqqUAkSMRCKRSISMLy8vd3Z2AKCpqYlSRHrKQ19fHwB8/vw5m80iYklJSVFRESLW1tYCwNbWlu/7QRBAIpEAgK6uLk2DN2/eAEAymSSWaL0Qwvf9w8PDy8tLcnZhYWFlZcX3/aurq3g8rpQiwsHR0REAvH79Whu3trZWVVURima15pOUUvNX6zWfKMmGUgoAfN+neAdBYNs28YwWUYuhFCMiEYs6jhBCK29bCWOMMSMUCgHAwcEBUcqyrLq6utPT093dXc0Y6nuImEqlOjo65ufnydiyrFzf72qfc15RUQEAnudRZr5//w4AT58+FUJQTNPpNGXm2bNnAOA4jj47lSyx+672EbGnpwcAlpeXtXZiYgIAGhsbHcchYh4dHcViMcbY4OAghYWIwTnf2NigUN5rKGdnZ4ZhNDc3I2Imk6HjdHd301FKSkpKS0vp/8WLF0EQUCtQSrmue3JysrOz86CTAa2or68HgLm5Odd1pZSU9x8/fnR2dkaj0bKyslgs9vXrV2JMLn/n5uYe9D1EhCAIPM+7vr62bfvJkyeO4xDdlFIErUVKmc1maYq+8Xh8f39ft7Q7UDqslHJtbY048fHjR51TfVK9hxCCetDU1NTq6qpuhvdANWld1/3w4QMxbGxs7Pz8HBFvbm5oAR384uKCiPX8+fPNzU2qdM38e6C5uTs5OWlrawOA8vLyV69era2tUb1SiJeWlmpqaurr60lJVg/cvPM0t8gQ8cuXL93d3ZFIJPc2C4VCXV1d6+vrdPf8iaXl4RVNRUVfAEin08lkMpvNVlZWFhcX63rJz89/5K7+y72vnyf6JWKaJpU5FX7uQ+bfoBqRXjj6taP1uqE8/qr4DVaxgYoJ6EinAAAAAElFTkSuQmCC" style="padding-top:5px;" alt="Cassandra" />
+        {% endspaceless %}</span>
+    <strong>Cassandra</strong>
+    <span class="count">
+        <span>{{ collector.commands|length }}</span>
+    </span>
+</span>
+{% endblock %}
+
+{% block panel %}
+    <h2>Cassandra</h2>
+    <p>avg : {{ collector.avgexecutiontime|number_format(4) }} - total : {{ collector.totalexecutiontime|number_format(4) }}</p>
+
+    <table class="routing inline">
+        <thead>
+            <tr>
+                <th rowspan="2">Keyspace</th>
+                <th rowspan="2">Command</th>
+                <th rowspan="2">Argument</th>
+                <th rowspan="2">Execution time</th>
+                <th colspan="4">Execution options</th>
+            </tr>
+            <tr>
+                <th>Consistency</th>
+                <th>Serial Consistency</th>
+                <th>Page size</th>
+                <th>Timeout</th>
+            </tr>
+        </thead>
+        <tboby>`
+        {% for command in collector.commands %}
+            <tr>
+                <td>{{ command.keyspace }}</td>
+                <td>{{ command.command }}</td>
+                <td>
+                    {{ command.argument }}
+                    {% if command.argument == 'Statement' %}
+                        {{ command.executionOptions.arguments }}
+                    {% endif %}
+                </td>
+                <td>{{ command.executionTime }}/td>
+                <td>{{ command.executionOptions.consistency }}</td>
+                <td>{{ command.executionOptions.serialConsistency }}</td>
+                <td>{{ command.executionOptions.pageSize }}</td>
+                <td>{{ command.executionOptions.timeout }}</td>
+            </tr>
+        {% endfor %}
+        </tboby>
+    </table>
+{% endblock %}

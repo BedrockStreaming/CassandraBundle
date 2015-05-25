@@ -23,12 +23,15 @@ class M6WebCassandraExtension extends Extension
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
 
-        //$container->setParameter('m6web_cassandra', $config);
         foreach ($config['clients'] as $clientId => $clientConfig) {
             $clientConfig['dispatch_events'] = $config['dispatch_events'];
             $this->loadClient($container, $clientId, $clientConfig);
         }
 
+        if ($container->getParameter('kernel.debug')) {
+            $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
+            $loader->load('services.yml');
+        }
     }
 
     protected function loadClient(ContainerBuilder $container, $clientId, array $config)
