@@ -4,6 +4,7 @@ namespace M6Web\Bundle\CassandraBundle\DataCollector;
 use Symfony\Component\HttpKernel\DataCollector\DataCollector;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
+use M6Web\Bundle\CassandraBundle\EventDispatcher\CassandraEvent;
 
 /**
  * Collect information about cassandra command
@@ -50,8 +51,8 @@ class CassandraDataCollector extends DataCollector
         $data = [
             'keyspace'         => $event->getKeyspace(),
             'command'          => $event->getCommand(),
-            'argument'         => $this->getArgument($event),
-            'executionOptions' => $this->getExecutionOption($event),
+            'argument'         => $this->getArguments($event),
+            'executionOptions' => $this->getExecutionOptions($event),
             'executionTime'    => $event->getExecutionTime()
         ];
 
@@ -136,11 +137,11 @@ class CassandraDataCollector extends DataCollector
         $options = $arguments[1];
 
         return [
-            'consistency'       => $options->consistency,
-            'serialConsistency' => $options->serialConsistency,
-            'pageSize'          => $options->pageSize,
-            'timeout'           => $options->timeout,
-            'arguments'         => var_export($options->arguments, true)
+            'consistency'       => (isset($options->consistency)) ? $options->consistency : '',
+            'serialConsistency' => (isset($options->serialConsistency)) ? $options->serialConsistency : '',
+            'pageSize'          => (isset($options->pageSize)) ? $options->pageSize : '',
+            'timeout'           => (isset($options->timeout)) ? $options->timeout : '',
+            'arguments'         => (isset($options->arguments)) ? var_export($options->arguments, true) : ''
         ];
 
     }
