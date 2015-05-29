@@ -141,7 +141,7 @@ class CassandraEvent extends Event
      */
     public function getExecutionTime()
     {
-        return $this>executionTime;
+        return $this->executionTime;
     }
 
     /**
