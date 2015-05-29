@@ -13,7 +13,7 @@
   ],
   "require": {
     "php": ">=5.5",
-    "datastax/php-driver": "dev-master"
+    "ext-cassandra": "*"
   },
   "require-dev": {
     "atoum/atoum": "~2.0",
@@ -22,7 +22,8 @@
     "symfony/dependency-injection": "~2.3",
     "symfony/event-dispatcher": "~2.3",
     "symfony/config" : "~2.3",
-    "symfony/yaml" : "~2.3"
+    "symfony/yaml" : "~2.3",
+    "datastax/php-driver": "dev-master"
   },
   "autoload": {
     "psr-4": {"M6Web\\Bundle\\CassandraBundle\\": "src/"}
