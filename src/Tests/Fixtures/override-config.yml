@@ -24,3 +24,5 @@ m6web_cassandra:
       timeout:
         connect: 15
         request: 15
+      retries:
+        sync_requests: 1

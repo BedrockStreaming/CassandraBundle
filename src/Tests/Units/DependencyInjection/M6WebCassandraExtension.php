@@ -21,8 +21,8 @@ class M6WebCassandraExtension extends test
             ->boolean($container->has('m6web_cassandra.client.client_test'))
                 ->isTrue()
             ->array($arguments = $container->getDefinition('m6web_cassandra.client.client_test')->getArgument(0))
-                ->hasSize(10)
-                ->hasKeys(['keyspace', 'contact_endpoints', 'load_balancing', 'default_consistency', 'default_pagesize', 'port_endpoint', 'token_aware_routing', 'ssl', 'timeout'])
+                ->hasSize(11)
+                ->hasKeys(['keyspace', 'contact_endpoints', 'load_balancing', 'default_consistency', 'default_pagesize', 'port_endpoint', 'token_aware_routing', 'ssl', 'timeout', 'retries'])
                 ->notHasKeys(['default_timeout'])
             ->boolean($arguments['dispatch_events'])
                 ->isTrue()
@@ -55,6 +55,10 @@ class M6WebCassandraExtension extends test
                     ->isEqualTo(5)
                 ->integer($timeouts['request'])
                     ->isEqualTo(5)
+            ->array($retries = $arguments['retries'])
+                ->hasSize(1)
+                ->integer($retries['sync_requests'])
+                    ->isEqualTo(0)
         ;
     }
 
@@ -67,8 +71,8 @@ class M6WebCassandraExtension extends test
             ->boolean($container->has('m6web_cassandra.client.client_test'))
                 ->isTrue()
             ->array($arguments = $container->getDefinition('m6web_cassandra.client.client_test')->getArgument(0))
-                ->hasSize(13)
-                ->hasKeys(['keyspace', 'contact_endpoints', 'load_balancing', 'default_consistency', 'default_pagesize', 'port_endpoint', 'token_aware_routing', 'ssl', 'timeout', 'credentials', 'default_timeout', 'dc_options'])
+                ->hasSize(14)
+                ->hasKeys(['keyspace', 'contact_endpoints', 'load_balancing', 'default_consistency', 'default_pagesize', 'port_endpoint', 'token_aware_routing', 'ssl', 'timeout', 'credentials', 'default_timeout', 'dc_options', 'retries'])
             ->boolean($arguments['dispatch_events'])
                 ->isFalse()
             ->string($arguments['keyspace'])
@@ -118,6 +122,10 @@ class M6WebCassandraExtension extends test
                     ->isEqualTo('username')
                 ->string($credentials['password'])
                     ->isEqualTo('password')
+            ->array($retries = $arguments['retries'])
+                ->hasSize(1)
+                ->integer($retries['sync_requests'])
+                    ->isEqualTo(1)
         ;
     }
 
@@ -130,8 +138,8 @@ class M6WebCassandraExtension extends test
             ->boolean($container->has('m6web_cassandra.client.client_test'))
                 ->isTrue()
             ->array($arguments = $container->getDefinition('m6web_cassandra.client.client_test')->getArgument(0))
-                ->hasSize(10)
-                ->hasKeys(['keyspace', 'contact_endpoints', 'load_balancing', 'default_consistency', 'default_pagesize', 'port_endpoint', 'token_aware_routing', 'ssl', 'timeout'])
+                ->hasSize(11)
+                ->hasKeys(['keyspace', 'contact_endpoints', 'load_balancing', 'default_consistency', 'default_pagesize', 'port_endpoint', 'token_aware_routing', 'ssl', 'timeout', 'retries'])
             ->boolean($arguments['dispatch_events'])
                 ->isTrue()
             ->string($arguments['keyspace'])
@@ -147,7 +155,7 @@ class M6WebCassandraExtension extends test
             ->boolean($container->has('m6web_cassandra.client.client_test2'))
                 ->isTrue()
             ->array($arguments2 = $container->getDefinition('m6web_cassandra.client.client_test2')->getArgument(0))
-                ->hasSize(12)
+                ->hasSize(13)
                 ->hasKeys(['keyspace', 'contact_endpoints', 'load_balancing', 'default_consistency', 'default_pagesize', 'port_endpoint', 'token_aware_routing', 'ssl', 'timeout', 'credentials', 'dc_options'])
             ->boolean($arguments['dispatch_events'])
                 ->isTrue()

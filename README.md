@@ -124,7 +124,9 @@ m6web_cassandra:
             timeout:
                 connect: 5 
                 request: 5 
-                
+            retries:
+                sync_requests: 0          # Number of retries for synchronous requests. Default is 0, must be an integer if set
+
         client_name:
             ...
 ```

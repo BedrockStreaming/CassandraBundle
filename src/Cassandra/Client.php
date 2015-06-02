@@ -39,6 +39,11 @@ class Client implements Session
     protected $keyspace;
 
     /**
+     * @var integer
+     */
+    protected $maxRetry;
+
+    /**
      * @var EventDispatcherInterface
      */
     protected $eventDispatcher;
@@ -52,9 +57,11 @@ class Client implements Session
      */
     public function __construct(array $config)
     {
-        $this->config = $config;
+        $this->config  = $config;
         $this->session = null;
+
         $this->keyspace = $config['keyspace'];
+        $this->maxRetry = $config['retries']['sync_requests'];
     }
 
     /**
@@ -165,11 +172,7 @@ class Client implements Session
      */
     public function prepare($cql, ExecutionOptions $options = null)
     {
-        if (is_null($options)) {
-            return $this->send('prepare', [$cql]);
-        } else {
-            return $this->send('prepare', [$cql, $options]);
-        }
+        return $this->send('prepare', [$cql, $options]);
     }
 
     /**
@@ -184,11 +187,7 @@ class Client implements Session
      */
     public function prepareAsync($cql, ExecutionOptions $options = null)
     {
-        if (is_null($options)) {
-            return $this->send('prepareAsync', [$cql]);
-        } else {
-            return $this->send('prepareAsync', [$cql, $options]);
-        }
+        return $this->send('prepareAsync', [$cql, $options]);
     }
 
     /**
@@ -282,7 +281,29 @@ class Client implements Session
     {
         $event = $this->prepareEvent($command, $arguments);
 
-        $return = call_user_func_array([$this->getSession(), $command], $arguments);
+        // The last arguments of call_user_func_array must not be null
+        if (end($arguments) === null) {
+            array_pop($arguments);
+        }
+
+        $retry = $this->maxRetry;
+        while($retry >= 0) {
+            try {
+                $return = call_user_func_array([$this->getSession(), $command], $arguments);
+
+                // No exception, we can return the result
+                $retry = -1;
+            } catch (\Cassandra\Exception\RuntimeException $e) {
+                if ($retry > 0) {
+                    // Reset the current session to retry the command
+                    $this->resetSession();
+                    $retry--;
+                } else {
+                    // too many retries, rethrow the exception
+                    throw $e;
+                }
+            }
+        }
 
         return $this->prepareResponse($return, $event);
     }

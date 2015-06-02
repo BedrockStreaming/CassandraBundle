@@ -58,6 +58,52 @@ class Client extends test
         ;
     }
 
+    public function testExecuteRetry()
+    {
+        $this
+            ->if($testedClass = new TestedClass($this->getClusterConfig()))
+            ->and($clusterMock = $this->getClusterMock())
+            ->and($sessionMock = $this->getSessionMock(1))
+            ->and($clusterMock->getMockController()->connect = $sessionMock)
+            ->and($testedClass->setCluster($clusterMock))
+            ->and($testedClass->execute($statement = $this->getStatementMock()))
+            ->then
+                ->mock($clusterMock)
+                    ->call('connect')
+                        ->twice()
+                ->mock($sessionMock)
+                    ->call('execute')
+                        ->withArguments($statement, null)
+                        ->twice()
+        ;
+    }
+
+    public function testExecuteRetryError()
+    {
+        $this
+            ->if($testedClass = new TestedClass($this->getClusterConfig()))
+            ->and($clusterMock = $this->getClusterMock())
+            ->and($sessionMock = $this->getSessionMock(0, true))
+            ->and($clusterMock->getMockController()->connect = $sessionMock)
+            ->and($testedClass->setCluster($clusterMock))
+            ->and($statement = $this->getStatementMock())
+            ->then
+                ->exception(
+                    function() use($testedClass, $statement) {
+                        $testedClass->execute($statement);
+                    }
+                )
+                    ->isInstanceOf('\Cassandra\Exception\RuntimeException')
+                ->mock($clusterMock)
+                    ->call('connect')
+                        ->twice()
+                ->mock($sessionMock)
+                    ->call('execute')
+                        ->withArguments($statement, null)
+                        ->twice()
+        ;
+    }
+
     public function testExecuteAsync()
     {
         $this
@@ -150,7 +196,8 @@ class Client extends test
     {
         return [
             'keyspace' => 'test',
-            'contact_endpoints' => ['127.0.0.1']
+            'contact_endpoints' => ['127.0.0.1'],
+            'retries' => [ 'sync_requests' => 1 ]
         ];
     }
 
@@ -161,13 +208,20 @@ class Client extends test
         return new \mock\Cassandra\Cluster;
     }
 
-    public function getSessionMock()
+    public function getSessionMock($retry = 0, $error = false)
     {
         $this->getMockGenerator()->shuntParentClassCalls();
 
         $session = new \mock\Cassandra\Session();
         $session->getMockController()->executeAsync = new \mock\Cassandra\Future();
         $session->getMockController()->prepareAsync = new \mock\Cassandra\Future();
+
+        $session->getMockController()->execute = function() use (&$retry, $error) {
+            if (($error && $retry <= 0) || ($retry > 0)) {
+                $retry--;
+                throw new \Cassandra\Exception\RuntimeException('runtime error');
+            }
+        };
 
         return $session;
     }
