@@ -2,6 +2,7 @@ m6web_cassandra:
   dispatch_events: false
   clients:
     client_test:
+      persistent_sessions: false
       keyspace: 'test'
       load_balancing: 'dc-aware-round-robin'
       dc_options:

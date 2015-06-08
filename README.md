@@ -104,6 +104,7 @@ m6web_cassandra:
     dispatch_events: true                 # By default event are triggered on each cassandra command
     clients:
         client_name:
+            persistent_sessions: true     # persistent session connection 
             keyspace: "mykeyspace"        # required keyspace to connect
             load_balancing: "round-robin" # round-robin or dc-aware-round-robin
             dc_options:                   # required if load balancing is set to dc-aware-round-robin
