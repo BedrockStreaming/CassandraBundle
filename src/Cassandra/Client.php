@@ -215,6 +215,20 @@ class Client implements Session
     }
 
     /**
+     * Returns current schema.
+     *
+     * NOTE: the returned Schema instance will not be updated as the actual
+     *       schema changes, instead an updated instance should be requested by
+     *       calling Session::schema() again.
+     *
+     * @return \Cassandra\Schema
+     */
+    public function schema()
+    {
+        return $this->getSession()->schema();
+    }
+
+    /**
      * Reset cassandra session
      */
     protected function resetSession()
@@ -287,7 +301,7 @@ class Client implements Session
         }
 
         $retry = $this->maxRetry;
-        while($retry >= 0) {
+        while ($retry >= 0) {
             try {
                 $return = call_user_func_array([$this->getSession(), $command], $arguments);
 
