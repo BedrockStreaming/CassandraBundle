@@ -12,6 +12,25 @@ use M6Web\Bundle\CassandraBundle\EventDispatcher\CassandraEvent;
 class CassandraDataCollector extends DataCollector
 {
     /**
+     * Human readable values for consistency
+     *
+     * @var array
+     */
+    static protected $consistency = [
+        \Cassandra::CONSISTENCY_ANY          => 'any',
+        \Cassandra::CONSISTENCY_ONE          => 'one',
+        \Cassandra::CONSISTENCY_TWO          => 'two',
+        \Cassandra::CONSISTENCY_THREE        => 'three',
+        \Cassandra::CONSISTENCY_QUORUM       => 'quorum',
+        \Cassandra::CONSISTENCY_ALL          => 'all',
+        \Cassandra::CONSISTENCY_LOCAL_QUORUM => 'local quorum',
+        \Cassandra::CONSISTENCY_EACH_QUORUM  => 'each quorum',
+        \Cassandra::CONSISTENCY_SERIAL       => 'serial',
+        \Cassandra::CONSISTENCY_LOCAL_SERIAL => 'local serial',
+        \Cassandra::CONSISTENCY_LOCAL_ONE    => 'local one'
+    ];
+
+    /**
      * Construct the data collector
      */
     public function __construct()
@@ -137,12 +156,28 @@ class CassandraDataCollector extends DataCollector
         $options = $arguments[1];
 
         return [
-            'consistency'       => (isset($options->consistency)) ? $options->consistency : '',
-            'serialConsistency' => (isset($options->serialConsistency)) ? $options->serialConsistency : '',
-            'pageSize'          => (isset($options->pageSize)) ? $options->pageSize : '',
-            'timeout'           => (isset($options->timeout)) ? $options->timeout : '',
-            'arguments'         => (isset($options->arguments)) ? var_export($options->arguments, true) : ''
+            'consistency'       => self::getConsistency($options->consistency),
+            'serialConsistency' => self::getConsistency($options->serialConsistency),
+            'pageSize'          => $options->pageSize,
+            'timeout'           => $options->timeout,
+            'arguments'         => var_export($options->arguments, true)
         ];
 
+    }
+
+    /**
+     * Get human readable value of consistency
+     *
+     * @param int $intval
+     *
+     * @return string|null
+     */
+    protected static function getConsistency($intval)
+    {
+        if (array_key_exists($intval, self::$consistency)) {
+            return self::$consistency[$intval];
+        }
+
+        return null;
     }
 }
