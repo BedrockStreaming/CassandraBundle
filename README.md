@@ -85,17 +85,17 @@ foreach($result->get() as $row) {
 }
 ```
 
-Bundle provide a util class for build a `\Cassandra\Timeuuid` from a string.
+Bundle provide a util class for extracting Datetime from a timeuuid string. 
 
 ```php
 use M6Web\Bundle\CassandraBundle\Cassandra\Type as TypeUtils;
 
-$timeuuid = TypeUtils::getTimeuuidFromString('513a5340-6da0-11e5-815e-93ec150e89fd');
+$datetime = TypeUtils::getDateTimeFromTimeuuidString('513a5340-6da0-11e5-815e-93ec150e89fd');
 
-if (is_null($timeuuid)) {
+if (is_null($datetime)) {
     // something is wrong with supplied uuid
 } else {
-    echo $timeuuid->toDateTime()->format(\DateTime::W3C); // 2015-10-08 11:38:22+02:00
+    echo $datetime->format(\DateTime::W3C); // 2015-10-08 11:38:22+02:00
 }
 ```
 
