@@ -18,7 +18,7 @@ class Type
      *
      * @return \Cassandra\Timeuuid|null
      */
-    public static function getTimeuuidFromString($uuid)
+    public static function getDateTimeFromTimeuuidString($uuid)
     {
         $str = preg_replace("/[^a-f0-9]/is", "", $uuid); // delete non hexadecimal
 
@@ -43,7 +43,7 @@ class Type
                 return null;
             }
 
-            return new \Cassandra\Timeuuid(floor($time) * 1000);
+            return \DateTime::createFromFormat('U', floor($time));
         }
 
         return null;

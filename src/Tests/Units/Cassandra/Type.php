@@ -15,10 +15,10 @@ class Type extends test
     public function testTimeuuidFromString($uuid, $datetime)
     {
         $this
-            ->object($timeuuid = TestedClass::getTimeuuidFromString($uuid))
-                ->isInstanceOf('\Cassandra\Timeuuid')
-            ->object($timeuuid->toDateTime())
-                ->isEqualTo($datetime);
+            ->object($timeuuid = TestedClass::getDateTimeFromTimeuuidString($uuid))
+                ->isInstanceOf('\DateTime')
+                ->isEqualTo($datetime)
+        ;
     }
 
     /**
@@ -29,7 +29,7 @@ class Type extends test
     public function testInvalidTimeuuid($uuid)
     {
         $this
-            ->variable($timeuuid = TestedClass::getTimeuuidFromString($uuid))
+            ->variable($timeuuid = TestedClass::getDateTimeFromTimeuuidString($uuid))
                 ->isNull()
         ;
     }
