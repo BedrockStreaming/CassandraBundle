@@ -85,6 +85,20 @@ foreach($result->get() as $row) {
 }
 ```
 
+Bundle provide a util class for build a `\Cassandra\Timeuuid` from a string.
+
+```php
+use M6Web\Bundle\CassandraBundle\Cassandra\Type as TypeUtils;
+
+$timeuuid = TypeUtils::getTimeuuidFromString('513a5340-6da0-11e5-815e-93ec150e89fd');
+
+if (is_null($timeuuid)) {
+    // something is wrong with supplied uuid
+} else {
+    echo $timeuuid->toDateTime()->format(\DateTime::W3C); // 2015-10-08 11:38:22+02:00
+}
+```
+
 ## DataCollector
 
 Datacollector is available when the symfony profiler is enabled. The collector allows you to see the following Cassandra data :
