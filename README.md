@@ -8,7 +8,6 @@ The CassandraBundle provide a Cassandra client as a Symfony service.
 
 **NOTE :** You need to [install the offical datastax php driver extension](https://github.com/datastax/php-driver)
 
-**NOTE :** Bundle still in beta like the datastax component
 
 Require the bundle in your composer.json file :
 
