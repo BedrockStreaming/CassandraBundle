@@ -12,11 +12,11 @@ class Type
     const UUID_LENGTH = 16;
 
     /**
-     * Get a Cassandra\Timeuuid from string
+     * Get a Datetime from a timeuuid string
      *
      * @param string $uuid
      *
-     * @return \Cassandra\Timeuuid|null
+     * @return \DateTime|null
      */
     public static function getDateTimeFromTimeuuidString($uuid)
     {
