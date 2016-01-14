@@ -14,7 +14,7 @@ Require the bundle in your composer.json file :
 ```json
 {
     "require": {
-        "m6web/cassandra-bundle": "~1.0.0-beta",
+        "m6web/cassandra-bundle": "~1.0",
     }
 }
 ```
