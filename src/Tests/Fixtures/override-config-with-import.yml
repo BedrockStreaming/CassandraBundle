@@ -1,0 +1,10 @@
+imports:
+    - { resource: default-config.yml }
+
+m6web_cassandra:
+  clients:
+    client_test:
+      contact_endpoints:
+        - '127.0.0.4'
+        - '127.0.0.5'
+        - '127.0.0.6'

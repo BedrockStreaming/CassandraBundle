@@ -59,7 +59,7 @@ class Configuration implements ConfigurationInterface
                                 ->end()
                             ->end()
                             ->integerNode('default_pagesize')->deFaultValue(10000)->end()
-                            ->arrayNode('contact_endpoints')->isRequired()->requiresAtLeastOneElement()
+                            ->arrayNode('contact_endpoints')->isRequired()->requiresAtLeastOneElement()->performNoDeepMerging()
                                 ->prototype('scalar')->end()
                             ->end()
                             ->integerNode('port_endpoint')->defaultValue(9042)->end()

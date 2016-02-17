@@ -133,6 +133,26 @@ class M6WebCassandraExtension extends test
         ;
     }
 
+    public function testOverrideDefaultEndPointsConfig()
+    {
+        $container = $this->getContainerForConfiguation('override-config-with-import');
+        $container->compile();
+
+        $this
+            ->boolean($container->has('m6web_cassandra.client.client_test'))
+                ->isTrue()
+            ->array($arguments = $container->getDefinition('m6web_cassandra.client.client_test')->getArgument(0))
+            ->array($endpoints = $arguments['contact_endpoints'])
+                ->hasSize(3)
+                ->string($endpoints[0])
+                    ->isEqualTo('127.0.0.4')
+                ->string($endpoints[1])
+                    ->isEqualTo('127.0.0.5')
+                ->string($endpoints[2])
+                    ->isEqualTo('127.0.0.6')
+        ;
+    }
+
     public function testMulticlientsConfig()
     {
         $container = $this->getContainerForConfiguation('multiclients');
