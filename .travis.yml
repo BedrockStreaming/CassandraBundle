@@ -2,12 +2,20 @@ language: php
 
 php:
   - 5.5
+  - 7.0
+
+env:
+  - SYMFONY_VERSION="~2.3.0"
+  - SYMFONY_VERSION="~2.7.0"
+  - SYMFONY_VERSION="~3.0.0"
 
 branches:
   only:
     - master
 
 before_install:
+  # disable xdebug
+  - phpenv config-rm xdebug.ini
   # PPA for libuv-dev
   - sudo apt-add-repository ppa:linuxjedi/ppa -y
   - sudo apt-get update
@@ -17,7 +25,11 @@ before_install:
   - echo "extension=cassandra.so" >> `php --ini | grep "Loaded Configuration" | sed -e "s|.*:\s*||"`
 
 install:
-  - composer install -n --dev
+  - composer install -n
+
+before_script:
+  - composer require --no-update --dev symfony/dependency-injection:${SYMFONY_VERSION} symfony/event-dispatcher:${SYMFONY_VERSION} symfony/config:${SYMFONY_VERSION} symfony/yaml:${SYMFONY_VERSION}
+  - composer update --prefer-dist --no-interaction
 
 script:
   - bin/atoum
