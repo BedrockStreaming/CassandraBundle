@@ -58,7 +58,15 @@ class Configuration implements ConfigurationInterface
                                     ->thenInvalid('Invalid consistency value "%s"')
                                 ->end()
                             ->end()
-                            ->integerNode('default_pagesize')->deFaultValue(10000)->end()
+                            ->scalarNode('default_pagesize')
+                                ->defaultValue(10000)
+                                ->validate()
+                                    ->ifTrue(function ($v) {
+                                        return !is_null($v) && (!is_int($v) || $v <= 0);
+                                    })
+                                    ->thenInvalid('Expected positive integer or null value')
+                                ->end()
+                            ->end()
                             ->arrayNode('contact_endpoints')->isRequired()->requiresAtLeastOneElement()->performNoDeepMerging()
                                 ->prototype('scalar')->end()
                             ->end()

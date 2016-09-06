@@ -125,7 +125,7 @@ m6web_cassandra:
                 host_per_remote_dc: 3
                 remote_dc_for_local_consistency: false
             default_consistency: "one"    # 'one', 'any', 'two', 'three', 'quorum', 'all', 'local_quorum', 'each_quorum', 'serial', 'local_serial', 'local_one'
-            default_pagesize: 10000       # -1 to disable pagination
+            default_pagesize: 10000       # ~ to disable pagination
             contact_endpoints:            # required list of ip to contact
                 - 127.0.0.1
             port_endpoint: 9042           # cassandra port

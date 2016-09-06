@@ -150,6 +150,8 @@ class M6WebCassandraExtension extends test
                     ->isEqualTo('127.0.0.5')
                 ->string($endpoints[2])
                     ->isEqualTo('127.0.0.6')
+            ->variable($arguments['default_pagesize'])
+                ->isNull()
         ;
     }
 
