@@ -8,3 +8,4 @@ m6web_cassandra:
         - '127.0.0.4'
         - '127.0.0.5'
         - '127.0.0.6'
+      default_pagesize: ~
