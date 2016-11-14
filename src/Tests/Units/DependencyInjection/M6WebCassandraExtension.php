@@ -10,11 +10,18 @@ use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 
 use M6Web\Bundle\CassandraBundle\DependencyInjection\M6WebCassandraExtension as TestedClass;
 
+/**
+ * Class M6WebCassandraExtension
+ * @package M6Web\Bundle\CassandraBundle\Tests\Units\DependencyInjection
+ */
 class M6WebCassandraExtension extends test
 {
+    /**
+     * @return void
+     */
     public function testDefaultConfig()
     {
-        $container = $this->getContainerForConfiguation('default-config');
+        $container = $this->getContainerForConfiguration('default-config');
         $container->compile();
 
         $this
@@ -64,9 +71,32 @@ class M6WebCassandraExtension extends test
         ;
     }
 
+    /**
+     * @return void
+     */
+    public function testShouldGetADefaultNullKeyspaceWhenNoKeyspaceGiven()
+    {
+        $container = $this->getContainerForConfiguration('default-config-without-keyspace');
+        $container->compile();
+
+        $this
+            ->boolean($container->has('m6web_cassandra.client.client_test'))
+                ->isTrue()
+            ->array($arguments = $container->getDefinition('m6web_cassandra.client.client_test')->getArgument(0))
+                ->hasSize(12)
+                ->hasKeys($this->getDefaultConfigKeys())
+                ->notHasKeys(['default_timeout'])
+            ->variable($arguments['keyspace'])
+                ->isNull()
+        ;
+    }
+
+    /**
+     * @return void
+     */
     public function testOverrideConfig()
     {
-        $container = $this->getContainerForConfiguation('override-config');
+        $container = $this->getContainerForConfiguration('override-config');
         $container->compile();
 
         $this
@@ -133,9 +163,12 @@ class M6WebCassandraExtension extends test
         ;
     }
 
+    /**
+     * @return void
+     */
     public function testOverrideDefaultEndPointsConfig()
     {
-        $container = $this->getContainerForConfiguation('override-config-with-import');
+        $container = $this->getContainerForConfiguration('override-config-with-import');
         $container->compile();
 
         $this
@@ -155,9 +188,12 @@ class M6WebCassandraExtension extends test
         ;
     }
 
+    /**
+     * @return void
+     */
     public function testMulticlientsConfig()
     {
-        $container = $this->getContainerForConfiguation('multiclients');
+        $container = $this->getContainerForConfiguration('multiclients');
         $container->compile();
 
         $this
@@ -205,6 +241,9 @@ class M6WebCassandraExtension extends test
     }
 
     /**
+     * @param array $configs
+     * @return void
+     *
      * @dataProvider unexpectedConfigValueDataProvider
      */
     public function testUnexpectedValueConfig($configs)
@@ -213,13 +252,15 @@ class M6WebCassandraExtension extends test
         $container = new ContainerBuilder($parameterBag);
 
         $this->if($extension = new TestedClass())
-            ->exception(function() use($extension, $configs, $container) {
+            ->exception(function () use ($extension, $configs, $container) {
                 $extension->load($configs, $container);
             })
             ->isInstanceOf('\Symfony\Component\Config\Definition\Exception\InvalidConfigurationException');
-
     }
 
+    /**
+     * @return void
+     */
     public function testInvalidConfig()
     {
         // no option for dc aware load balancing
@@ -237,15 +278,19 @@ class M6WebCassandraExtension extends test
         $container = new ContainerBuilder($parameterBag);
 
         $this->if($extension = new TestedClass())
-            ->exception(function() use($extension, $configs, $container) {
+            ->exception(function () use ($extension, $configs, $container) {
                 $extension->load($configs, $container);
             })
             ->isInstanceOf('\InvalidArgumentException');
     }
 
+    /**
+     * @return void
+     * @throws \Throwable
+     */
     public function testConfigurator()
     {
-        $container = $this->getContainerForConfiguation('default-config');
+        $container = $this->getContainerForConfiguration('default-config');
         $container->compile();
 
         $this
@@ -255,6 +300,9 @@ class M6WebCassandraExtension extends test
                 ->isInstanceOf('Cassandra\DefaultCluster');
     }
 
+    /**
+     * @return array
+     */
     protected function unexpectedConfigValueDataProvider()
     {
         return [
@@ -281,7 +329,11 @@ class M6WebCassandraExtension extends test
         ];
     }
 
-    protected function getContainerForConfiguation($fixtureName)
+    /**
+     * @param $fixtureName
+     * @return ContainerBuilder
+     */
+    protected function getContainerForConfiguration($fixtureName)
     {
         $extension = new TestedClass();
 
@@ -296,6 +348,10 @@ class M6WebCassandraExtension extends test
         return $container;
     }
 
+    /**
+     * @param array $keySup
+     * @return array
+     */
     protected function getDefaultConfigKeys(array $keySup = [])
     {
             return array_merge(
