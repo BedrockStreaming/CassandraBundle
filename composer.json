@@ -13,16 +13,17 @@
   ],
   "require": {
     "php": ">=5.5",
-    "ext-cassandra": "*"
+    "ext-cassandra": "*",
+    "symfony/symfony": "~2.8|~3.0"
   },
   "require-dev": {
     "atoum/atoum": "~2.0",
     "m6web/coke": "~1.2",
     "m6web/symfony2-coding-standard": "~2.0",
-    "symfony/dependency-injection": "~2.3",
-    "symfony/event-dispatcher": "~2.3",
-    "symfony/config" : "~2.3",
-    "symfony/yaml" : "~2.3",
+    "symfony/dependency-injection": "~3.0",
+    "symfony/event-dispatcher": "~3.0",
+    "symfony/config" : "3.0",
+    "symfony/yaml" : "~3.0",
     "datastax/php-driver": "dev-master"
   },
   "autoload": {
@@ -30,6 +31,5 @@
   },
   "config": {
     "bin-dir": "bin/"
-  },
-  "minimum-stability": "dev"
+  }
 }
