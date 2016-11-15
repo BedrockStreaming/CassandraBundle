@@ -36,7 +36,7 @@ class Configuration implements ConfigurationInterface
                         ->end()
                         ->children()
                             ->booleanNode('persistent_sessions')->defaultValue(true)->end()
-                            ->scalarNode('keyspace')->isRequired()->cannotBeEmpty()->end()
+                            ->scalarNode('keyspace')->defaultValue(null)->end()
                             ->scalarNode('load_balancing')
                                 ->defaultValue('round-robin')
                                 ->validate()
