@@ -14,7 +14,7 @@ Require the bundle in your composer.json file :
 ```json
 {
     "require": {
-        "m6web/cassandra-bundle": "~1.0",
+        "m6web/cassandra-bundle": "~1.1.0",
     }
 }
 ```
@@ -46,7 +46,6 @@ Add the `m6web_cassandra` section in your configuration file. Here is the minima
 m6web_cassandra:
     clients:
         myclient:
-            keyspace: "mykeyspace"
             contact_endpoints:
                 - 127.0.0.1
                 - 127.0.0.2
@@ -118,7 +117,7 @@ m6web_cassandra:
     clients:
         client_name:
             persistent_sessions: true     # persistent session connection 
-            keyspace: "mykeyspace"        # required keyspace to connect
+            keyspace: "mykeyspace"        # default is null, optional keyspace to connect
             load_balancing: "round-robin" # round-robin or dc-aware-round-robin
             dc_options:                   # required if load balancing is set to dc-aware-round-robin
                 local_dc_name: "testdc"
