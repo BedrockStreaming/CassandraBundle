@@ -1,7 +1,6 @@
 <?php
 namespace M6Web\Bundle\CassandraBundle\Cassandra;
 
-use Cassandra\ExecutionOptions;
 use Cassandra\Future;
 use Cassandra\PreparedStatement;
 use Cassandra\Session;
@@ -129,8 +128,8 @@ class Client implements Session
     /**
      * Executes a given statement and returns a result
      *
-     * @param Statement        $statement statement to be executed
-     * @param ExecutionOptions $options   execution options
+     * @param Statement $statement statement to be executed
+     * @param array     $options   execution options
      *
      * @throws \Cassandra\Exception
      *
@@ -144,11 +143,11 @@ class Client implements Session
     /**
      * Executes a given statement and returns a future result
      *
-     * Note that this method ignores ExecutionOptions::$timeout option, you can
+     * Note that this method ignores $options['timeout'] option, you can
      * provide one to Future::get() instead.
      *
-     * @param Statement        $statement statement to be executed
-     * @param ExecutionOptions $options   execution options
+     * @param Statement $statement statement to be executed
+     * @param array     $options   execution options
      *
      * @return \Cassandra\Future     future result
      */
@@ -160,11 +159,11 @@ class Client implements Session
     /**
      * Creates a prepared statement from a given CQL string
      *
-     * Note that this method only uses the ExecutionOptions::$timeout option,
+     * Note that this method only uses the $options['timeout'] option,
      * all other options will be ignored.
      *
-     * @param string           $cql     CQL statement string
-     * @param ExecutionOptions $options execution options
+     * @param string $cql     CQL statement string
+     * @param array  $options execution options
      *
      * @throws \Cassandra\Exception
      *
@@ -180,8 +179,8 @@ class Client implements Session
      *
      * Note that all options passed to this method will be ignored.
      *
-     * @param string           $cql     CQL string to be prepared
-     * @param ExecutionOptions $options preparation options
+     * @param string $cql     CQL string to be prepared
+     * @param array  $options preparation options
      *
      * @return \Cassandra\Future  statement
      */

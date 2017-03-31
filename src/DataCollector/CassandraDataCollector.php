@@ -68,11 +68,11 @@ class CassandraDataCollector extends DataCollector
     public function onCassandraCommand(CassandraEvent $event)
     {
         $data = [
-            'keyspace'         => $event->getKeyspace(),
-            'command'          => $event->getCommand(),
-            'argument'         => $this->getArguments($event),
-            'executionOptions' => $this->getExecutionOptions($event),
-            'executionTime'    => $event->getExecutionTime()
+            'keyspace'      => $event->getKeyspace(),
+            'command'       => $event->getCommand(),
+            'argument'      => $this->getArguments($event),
+            'options'       => $this->getOptions($event),
+            'executionTime' => $event->getExecutionTime()
         ];
 
         $this->data['cassandra']->enqueue($data);
@@ -139,28 +139,16 @@ class CassandraDataCollector extends DataCollector
      *
      * @return array
      */
-    protected function getExecutionOptions(CassandraEvent $event)
+    protected function getOptions(CassandraEvent $event)
     {
-        $arguments = $event->getArguments();
-
-        if (empty($arguments[1])) {
-            return [
-                'consistency'       => '',
-                'serialConsistency' => '',
-                'pageSize'          => '',
-                'timeout'           => '',
-                'arguments'         => ''
-            ];
-        }
-
-        $options = $arguments[1];
+        $options = $event->getArguments()[1];
 
         return [
-            'consistency'       => self::getConsistency($options->consistency),
-            'serialConsistency' => self::getConsistency($options->serialConsistency),
-            'pageSize'          => $options->pageSize,
-            'timeout'           => $options->timeout,
-            'arguments'         => var_export($options->arguments, true)
+            'consistency'       => self::getConsistency($options['consistency'] ?? ''),
+            'serialConsistency' => self::getConsistency($options['serialConsistency'] ?? ''),
+            'pageSize'          => $options['pageSize'] ?? '',
+            'timeout'           => $options['timeout'] ?? '',
+            'arguments'         => var_export($options['arguments'] ?? '', true)
         ];
 
     }
