@@ -136,7 +136,7 @@ class Client implements Session
      *
      * @return \Cassandra\Rows execution result
      */
-    public function execute(Statement $statement, ExecutionOptions $options = null)
+    public function execute($statement, $options = null)
     {
         return $this->send('execute', [$statement, $options]);
     }
@@ -152,7 +152,7 @@ class Client implements Session
      *
      * @return \Cassandra\Future     future result
      */
-    public function executeAsync(Statement $statement, ExecutionOptions $options = null)
+    public function executeAsync($statement, $options = null)
     {
         return $this->send('executeAsync', [$statement, $options]);
     }
@@ -170,7 +170,7 @@ class Client implements Session
      *
      * @return PreparedStatement  prepared statement
      */
-    public function prepare($cql, ExecutionOptions $options = null)
+    public function prepare($cql, $options = null)
     {
         return $this->send('prepare', [$cql, $options]);
     }
@@ -185,7 +185,7 @@ class Client implements Session
      *
      * @return \Cassandra\Future  statement
      */
-    public function prepareAsync($cql, ExecutionOptions $options = null)
+    public function prepareAsync($cql, $options = null)
     {
         return $this->send('prepareAsync', [$cql, $options]);
     }
@@ -320,5 +320,13 @@ class Client implements Session
         }
 
         return $this->prepareResponse($return, $event);
+    }
+
+    /**
+     * @return array Performance/Diagnostic metrics.
+     */
+    public function metrics()
+    {
+        return $this->getSession()->metrics();
     }
 }
