@@ -55,16 +55,16 @@
                     {% if command.argument == 'Statement' %}
                         <strong>{{ command.argument }}</strong> with arguments :
                         <br />
-                        <pre>{{ command.executionOptions.arguments }}</pre>
+                        <pre>{{ command.options['arguments'] }}</pre>
                     {% else %}
                         {{ command.argument }}
                     {% endif %}
                 </td>
                 <td>{{ command.executionTime|number_format(6) }}</td>
-                <td>{{ command.executionOptions.consistency }}</td>
-                <td>{{ command.executionOptions.serialConsistency }}</td>
-                <td>{{ command.executionOptions.pageSize }}</td>
-                <td>{{ command.executionOptions.timeout }}</td>
+                <td>{{ command.options['consistency'] }}</td>
+                <td>{{ command.options['serialConsistency'] }}</td>
+                <td>{{ command.options['pageSize'] }}</td>
+                <td>{{ command.options['timeout'] }}</td>
             </tr>
         {% endfor %}
         </tboby>
