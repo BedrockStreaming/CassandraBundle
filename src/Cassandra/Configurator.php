@@ -50,6 +50,22 @@ class Configurator
             $cluster->withDatacenterAwareRoundRobinLoadBalancingPolicy($dcOption['local_dc_name'], $dcOption['host_per_remote_dc'], $dcOption['remote_dc_for_local_consistency']);
         }
 
+        if($opt = $config['dc_whitelist']) {
+            $cluster->withWhiteListDCs(implode(', ', $opt));
+        }
+
+        if($opt = $config['dc_blacklist']) {
+            $cluster->withBlackListDCs(implode(', ', $opt));
+        }
+
+        if($opt = $config['hosts_whitelist']) {
+            $cluster->withWhiteListHosts(implode(', ', $opt));
+        }
+
+        if($opt = $config['hosts_blacklist']) {
+            $cluster->withBlackListHosts(implode(', ', $opt));
+        }
+
         if (array_key_exists('credentials', $config)) {
             $cluster->withCredentials($config['credentials']['username'], $config['credentials']['password']);
         }
