@@ -15,6 +15,16 @@ m6web_cassandra:
         - '127.0.0.1'
         - '127.0.0.2'
         - '127.0.0.3'
+      contact_whitelist:
+        dc:
+          - "testdc"
+        host:
+          - 172.0.0.1
+      contact_blacklist:
+        dc:
+          - "blacklisted_testdc"
+        host:
+          - 6.6.6.6
       port_endpoint: 8906
       token_aware_routing : false
       credentials:

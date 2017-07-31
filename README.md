@@ -127,6 +127,16 @@ m6web_cassandra:
             default_pagesize: 10000       # ~ to disable pagination
             contact_endpoints:            # required list of ip to contact
                 - 127.0.0.1
+            contact_whitelist:            # if specified cassandra will connect only to this datacenters/hosts
+                dc:
+                    - "testdc"
+                host:
+                    - 172.0.0.1
+            contact_blacklist:            # if specified cassandra will not connect to this datacenters/hosts
+                dc:
+                    - "blacklisted_testdc"
+                host:
+                    - 6.6.6.6
             port_endpoint: 9042           # cassandra port
             token_aware_routing: true     # Enable or disable token aware routing
             credentials:                  # cassandra authentication
