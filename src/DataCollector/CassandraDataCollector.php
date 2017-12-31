@@ -35,7 +35,17 @@ class CassandraDataCollector extends DataCollector
      */
     public function __construct()
     {
-        $this->data['cassandra'] = new \SplQueue();
+        $this->reset();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function reset()
+    {
+        $this->data = [
+            'cassandra' => new \SplQueue(),
+        ];
     }
 
     /**
