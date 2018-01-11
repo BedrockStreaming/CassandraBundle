@@ -2,5 +2,5 @@ services:
     m6web.data_collector.cassandra:
         class: M6Web\Bundle\CassandraBundle\DataCollector\CassandraDataCollector
         tags:
-            - { name: data_collector, template: 'M6WebCassandraBundle:Collector:cassandra', id: 'cassandra' }
+            - { name: data_collector, template: '@M6WebCassandra/Collector/cassandra.html.twig', id: 'cassandra' }
             - { name: kernel.event_listener, event: m6web.cassandra, method: onCassandraCommand }
