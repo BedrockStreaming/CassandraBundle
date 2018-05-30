@@ -40,6 +40,7 @@ class M6WebCassandraExtension extends Extension
         $definition = new Definition($class);
         $definition->addArgument($config);
         $definition->setConfigurator(['M6Web\Bundle\CassandraBundle\Cassandra\Configurator', 'buildCluster']);
+        $definition->setPublic(true);
 
         if ($config['dispatch_events']) {
             $definition->addMethodCall('setEventDispatcher', [new Reference('event_dispatcher')]);
