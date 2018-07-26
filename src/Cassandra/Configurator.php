@@ -31,7 +31,9 @@ class Configurator
             ->withTokenAwareRouting($config['token_aware_routing'])
             ->withConnectTimeout($config['timeout']['connect'])
             ->withRequestTimeout($config['timeout']['request'])
-            ->withPersistentSessions($config['persistent_sessions']);
+            ->withPersistentSessions($config['persistent_sessions'])
+            ->withIOThreads($config['io_threads'])
+            ->withConnectionsPerHost($config['connections_per_host_core'], $config['connections_per_host_max']);
 
         if (isset($config['ssl']) && $config['ssl'] === true) {
             $ssl = new SSLOptionsBuilder();

@@ -27,3 +27,6 @@ m6web_cassandra:
         request: 15
       retries:
         sync_requests: 1
+      io_threads: 3
+      connections_per_host_core: 3
+      connections_per_host_max: 6

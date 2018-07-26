@@ -139,6 +139,9 @@ m6web_cassandra:
                 request: 5 
             retries:
                 sync_requests: 0          # Number of retries for synchronous requests. Default is 0, must be an integer if set
+            io_threads: 1                 # Total number of IO threads to use for handling the requests
+            connections_per_host_core: 1  # Minimum connections to keep open to any given host
+            connections_per_host_max:  2  # Maximum connections to keep open to any given host
 
         client_name:
             ...

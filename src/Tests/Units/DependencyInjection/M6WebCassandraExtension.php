@@ -28,7 +28,7 @@ class M6WebCassandraExtension extends test
             ->boolean($container->has('m6web_cassandra.client.client_test'))
                 ->isTrue()
             ->array($arguments = $container->getDefinition('m6web_cassandra.client.client_test')->getArgument(0))
-                ->hasSize(12)
+                ->hasSize(15)
                 ->hasKeys($this->getDefaultConfigKeys())
                 ->notHasKeys(['default_timeout'])
             ->boolean($arguments['dispatch_events'])
@@ -68,6 +68,12 @@ class M6WebCassandraExtension extends test
                 ->hasSize(1)
                 ->integer($retries['sync_requests'])
                     ->isEqualTo(0)
+            ->integer($arguments['io_threads'])
+                ->isEqualTo(1)
+            ->integer($arguments['connections_per_host_core'])
+                ->isEqualTo(1)
+            ->integer($arguments['connections_per_host_max'])
+                ->isEqualTo(2)
         ;
     }
 
@@ -83,7 +89,7 @@ class M6WebCassandraExtension extends test
             ->boolean($container->has('m6web_cassandra.client.client_test'))
                 ->isTrue()
             ->array($arguments = $container->getDefinition('m6web_cassandra.client.client_test')->getArgument(0))
-                ->hasSize(12)
+                ->hasSize(15)
                 ->hasKeys($this->getDefaultConfigKeys())
                 ->notHasKeys(['default_timeout'])
             ->variable($arguments['keyspace'])
@@ -103,7 +109,7 @@ class M6WebCassandraExtension extends test
             ->boolean($container->has('m6web_cassandra.client.client_test'))
                 ->isTrue()
             ->array($arguments = $container->getDefinition('m6web_cassandra.client.client_test')->getArgument(0))
-                ->hasSize(15)
+                ->hasSize(18)
                 ->hasKeys($this->getDefaultConfigKeys(['credentials', 'default_timeout', 'dc_options']))
             ->boolean($arguments['dispatch_events'])
                 ->isFalse()
@@ -160,6 +166,12 @@ class M6WebCassandraExtension extends test
                 ->hasSize(1)
                 ->integer($retries['sync_requests'])
                     ->isEqualTo(1)
+            ->integer($arguments['io_threads'])
+                ->isEqualTo(3)
+            ->integer($arguments['connections_per_host_core'])
+                ->isEqualTo(3)
+            ->integer($arguments['connections_per_host_max'])
+                ->isEqualTo(6)
         ;
     }
 
@@ -200,7 +212,7 @@ class M6WebCassandraExtension extends test
             ->boolean($container->has('m6web_cassandra.client.client_test'))
                 ->isTrue()
             ->array($arguments = $container->getDefinition('m6web_cassandra.client.client_test')->getArgument(0))
-                ->hasSize(12)
+                ->hasSize(15)
                 ->hasKeys($this->getDefaultConfigKeys())
             ->boolean($arguments['dispatch_events'])
                 ->isTrue()
@@ -217,7 +229,7 @@ class M6WebCassandraExtension extends test
             ->boolean($container->has('m6web_cassandra.client.client_test2'))
                 ->isTrue()
             ->array($arguments2 = $container->getDefinition('m6web_cassandra.client.client_test2')->getArgument(0))
-                ->hasSize(14)
+                ->hasSize(17)
                 ->hasKeys($this->getDefaultConfigKeys(['credentials', 'dc_options']))
             ->boolean($arguments['dispatch_events'])
                 ->isTrue()
@@ -366,7 +378,10 @@ class M6WebCassandraExtension extends test
                 'token_aware_routing',
                 'ssl',
                 'timeout',
-                'retries'
+                'retries',
+                'io_threads',
+                'connections_per_host_core',
+                'connections_per_host_max',
                 ],
                 $keySup
             );
