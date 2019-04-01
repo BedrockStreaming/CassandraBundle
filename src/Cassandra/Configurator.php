@@ -2,6 +2,7 @@
 namespace M6Web\Bundle\CassandraBundle\Cassandra;
 
 use Cassandra\Cluster\Builder;
+use Cassandra\Session;
 use Cassandra\SSLOptions\Builder as SSLOptionsBuilder;
 
 /**
@@ -14,9 +15,9 @@ class Configurator
     /**
      * Configure given client
      *
-     * @param Client $client
+     * @param Session $client
      */
-    public static function buildCluster(Client $client)
+    public static function buildCluster(Session $client)
     {
         $config = $client->getConfig();
 

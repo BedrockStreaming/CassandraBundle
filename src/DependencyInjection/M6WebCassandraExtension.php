@@ -36,7 +36,9 @@ class M6WebCassandraExtension extends Extension
 
     protected function loadClient(ContainerBuilder $container, $clientId, array $config)
     {
-        $class = 'M6Web\Bundle\CassandraBundle\Cassandra\Client';
+        $version = preg_match('/1\.2.*/', \Cassandra::VERSION)? '' : '13';
+        $class = 'M6Web\Bundle\CassandraBundle\Cassandra\Client' . $version;
+
         $definition = new Definition($class);
         $definition->addArgument($config);
         $definition->setConfigurator(['M6Web\Bundle\CassandraBundle\Cassandra\Configurator', 'buildCluster']);
