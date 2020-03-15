@@ -27,7 +27,7 @@ class CassandraDataCollector extends DataCollector
         \Cassandra::CONSISTENCY_EACH_QUORUM  => 'each quorum',
         \Cassandra::CONSISTENCY_SERIAL       => 'serial',
         \Cassandra::CONSISTENCY_LOCAL_SERIAL => 'local serial',
-        \Cassandra::CONSISTENCY_LOCAL_ONE    => 'local one'
+        \Cassandra::CONSISTENCY_LOCAL_ONE    => 'local one',
     ];
 
     /**
@@ -82,7 +82,7 @@ class CassandraDataCollector extends DataCollector
             'command'       => $event->getCommand(),
             'argument'      => $this->getArguments($event),
             'options'       => $this->getOptions($event),
-            'executionTime' => $event->getExecutionTime()
+            'executionTime' => $event->getExecutionTime(),
         ];
 
         $this->data['cassandra']->enqueue($data);
@@ -158,9 +158,8 @@ class CassandraDataCollector extends DataCollector
             'serialConsistency' => self::getConsistency($options['serialConsistency'] ?? ''),
             'pageSize'          => $options['pageSize'] ?? '',
             'timeout'           => $options['timeout'] ?? '',
-            'arguments'         => var_export($options['arguments'] ?? '', true)
+            'arguments'         => var_export($options['arguments'] ?? '', true),
         ];
-
     }
 
     /**

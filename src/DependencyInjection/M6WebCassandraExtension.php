@@ -34,6 +34,14 @@ class M6WebCassandraExtension extends Extension
         }
     }
 
+    /**
+     * @return string
+     */
+    public function getAlias()
+    {
+        return 'm6web_cassandra';
+    }
+
     protected function loadClient(ContainerBuilder $container, $clientId, array $config)
     {
         $class = 'M6Web\Bundle\CassandraBundle\Cassandra\Client';
@@ -47,13 +55,5 @@ class M6WebCassandraExtension extends Extension
         }
 
         $container->setDefinition('m6web_cassandra.client.'.$clientId, $definition);
-    }
-
-    /**
-     * @return string
-     */
-    public function getAlias()
-    {
-        return 'm6web_cassandra';
     }
 }

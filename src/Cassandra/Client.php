@@ -228,6 +228,14 @@ class Client implements Session
     }
 
     /**
+     * @return array Performance/Diagnostic metrics.
+     */
+    public function metrics()
+    {
+        return $this->getSession()->metrics();
+    }
+
+    /**
      * Reset cassandra session
      */
     protected function resetSession()
@@ -319,13 +327,5 @@ class Client implements Session
         }
 
         return $this->prepareResponse($return, $event);
-    }
-
-    /**
-     * @return array Performance/Diagnostic metrics.
-     */
-    public function metrics()
-    {
-        return $this->getSession()->metrics();
     }
 }

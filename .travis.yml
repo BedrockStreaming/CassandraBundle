@@ -42,4 +42,6 @@ before_install:
 
 install: composer update --prefer-dist --no-interaction $COMPOSER_FLAGS
 
-script: bin/atoum
+script:
+  - bin/coke
+  - bin/atoum

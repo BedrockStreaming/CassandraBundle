@@ -153,5 +153,4 @@ class CassandraEvent extends Event
     {
         return $this->getExecutionTime() * 1000;
     }
-
 }

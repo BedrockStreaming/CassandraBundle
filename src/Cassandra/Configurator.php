@@ -50,12 +50,12 @@ class Configurator
             $cluster->withDatacenterAwareRoundRobinLoadBalancingPolicy($dcOption['local_dc_name'], $dcOption['host_per_remote_dc'], $dcOption['remote_dc_for_local_consistency']);
         }
 
-        if($opt = $config['contact_whitelist']) {
+        if ($opt = $config['contact_whitelist']) {
             !$opt['host'] ?: $cluster->withWhiteListHosts(implode(', ', $opt['host']));
             !$opt['dc'] ?: $cluster->withWhiteListDCs(implode(', ', $opt['dc']));
         }
 
-        if($opt = $config['contact_blacklist']) {
+        if ($opt = $config['contact_blacklist']) {
             !$opt['host'] ?: $cluster->withBlackListHosts(implode(', ', $opt['host']));
             !$opt['dc'] ?: $cluster->withBlackListDCs(implode(', ', $opt['dc']));
         }
