@@ -8,34 +8,20 @@ The CassandraBundle provide a Cassandra client as a Symfony service.
 
 **NOTE :** You need to [install the offical datastax php driver extension](https://github.com/datastax/php-driver)
 
-
-Require the bundle in your composer.json file :
-
-```json
-{
-    "require": {
-        "m6web/cassandra-bundle": "~1.1.0",
-    }
-}
-```
-
-Register the bundle in your kernel :
-
-```php
-// app/AppKernel.php
-
-public function registerBundles()
-{
-    $bundles = array(
-        new M6Web\Bundle\CassandraBundle\M6WebCassandraBundle(),
-    );
-}
-```
-
-Then install the bundle :
+Use composer:
 
 ```shell
-$ composer update m6web/cassandra-bundle
+composer require m6web/cassandra-bundle
+```
+
+Then make sure the bundle is registered in your application:
+
+```php
+// config/bundles.php
+
+return [
+    \M6Web\Bundle\CassandraBundle\M6WebCassandraBundle::class => ['all' => true],
+];
 ```
 
 ## Usage

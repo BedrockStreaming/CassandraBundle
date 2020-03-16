@@ -1,38 +1,47 @@
+dist: xenial
+sudo: true
+
 language: php
+cache:
+  directories:
+    - $HOME/.composer/cache/files
 
-php:
-  - 7.1
-  - 7.2
-  - 7.3
-
-env:
-  - SYMFONY_VERSION="~2.3.0"
-  - SYMFONY_VERSION="~2.7.0"
-  - SYMFONY_VERSION="~3.2.0"
-
-branches:
-  only:
-    - master
+matrix:
+  fast_finish: true
+  include:
+    # all supported PHP versions with lowest dependencies
+    - php: 7.1
+      env: COMPOSER_FLAGS="--prefer-stable --prefer-lowest"
+# @TODO: uncomment when cassandra extension will support >= php7.2
+#    - php: 7.2
+#      env: COMPOSER_FLAGS="--prefer-stable --prefer-lowest"
+#    - php: 7.3
+#      env: COMPOSER_FLAGS="--prefer-stable --prefer-lowest"
+#    - php: 7.4
+#      env: COMPOSER_FLAGS="--prefer-stable --prefer-lowest"
+    # symfony LTS versions
+    - php: 7.1
+      env: SYMFONY_REQUIRE="3.4.*"
+    - php: 7.1
+      env: SYMFONY_REQUIRE="4.4.*"
 
 before_install:
   # disable xdebug
   - phpenv config-rm xdebug.ini
-  # PPA for libuv-dev
-  - sudo apt-add-repository ppa:linuxjedi/ppa -y
-  - sudo apt-get update
-  - sudo apt-get install -y libssl-dev
-  - cd /tmp && wget https://github.com/libuv/libuv/archive/v1.11.0.tar.gz && tar -xvzf v1.11.0.tar.gz && cd libuv-1.11.0 && sh autogen.sh && ./configure && sudo make && sudo make install && sudo ldconfig
-  - cd /tmp && git clone https://github.com/datastax/php-driver.git && cd php-driver && git checkout master && git submodule update --init
-  - cd ext && ./install.sh && cd "$TRAVIS_BUILD_DIR"
-  - echo "extension=cassandra.so" >> `php --ini | grep "Loaded Configuration" | sed -e "s|.*:\s*||"`
+  # install cassandra extension
+  - wget http://downloads.datastax.com/cpp-driver/ubuntu/16.04/dependencies/libuv/v1.34.0/libuv1_1.34.0-1_amd64.deb
+  - wget http://downloads.datastax.com/cpp-driver/ubuntu/16.04/dependencies/libuv/v1.34.0/libuv1-dev_1.34.0-1_amd64.deb
+  - wget http://downloads.datastax.com/cpp-driver/ubuntu/16.04/cassandra/v2.15.0/cassandra-cpp-driver_2.15.0-1_amd64.deb
+  - wget http://downloads.datastax.com/cpp-driver/ubuntu/16.04/cassandra/v2.15.0/cassandra-cpp-driver-dev_2.15.0-1_amd64.deb
+  - sudo dpkg -i *.deb
+  - pecl channel-update pecl.php.net
+  - pecl install cassandra
+  # setup composer dependencies
+  - if ! [ -z "$STABILITY" ]; then composer config minimum-stability ${STABILITY}; fi;
+  - composer global require --no-progress --no-scripts --no-plugins symfony/flex
 
-install:
-  - composer install -n
-
-before_script:
-  - composer require --no-update --dev symfony/dependency-injection:${SYMFONY_VERSION} symfony/event-dispatcher:${SYMFONY_VERSION} symfony/config:${SYMFONY_VERSION} symfony/yaml:${SYMFONY_VERSION}
-  - composer update --prefer-dist --no-interaction
+install: composer update --prefer-dist --no-interaction $COMPOSER_FLAGS
 
 script:
+  - bin/coke
   - bin/atoum
-
