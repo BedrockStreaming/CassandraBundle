@@ -17,6 +17,8 @@ use M6Web\Bundle\CassandraBundle\EventDispatcher\CassandraEvent;
  */
 class Client implements Session
 {
+    use EventDispatcherTrait;
+
     /**
      * @var array
      */
@@ -285,7 +287,7 @@ class Client implements Session
         }
 
         $event->setExecutionStop();
-        $this->eventDispatcher->dispatch(CassandraEvent::EVENT_NAME, $event);
+        $this->dispatchEvent($event, CassandraEvent::EVENT_NAME);
 
         return $response;
     }

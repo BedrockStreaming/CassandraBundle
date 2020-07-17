@@ -12,6 +12,8 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
  */
 class FutureResponse implements Future
 {
+    use EventDispatcherTrait;
+
     /**
      * @var EventDispatcherInterface
      */
@@ -54,7 +56,7 @@ class FutureResponse implements Future
         $return = $this->future->get($timeout);
 
         $this->event->setExecutionStop();
-        $this->eventDispatcher->dispatch(CassandraEvent::EVENT_NAME, $this->event);
+        $this->dispatchEvent($this->event, CassandraEvent::EVENT_NAME);
 
         return $return;
     }
