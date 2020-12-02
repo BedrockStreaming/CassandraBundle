@@ -10,7 +10,7 @@ matrix:
   fast_finish: true
   include:
     # all supported PHP versions with lowest dependencies
-    - php: 7.1
+    - php: 7.2
       env: COMPOSER_FLAGS="--prefer-stable --prefer-lowest"
 # @TODO: uncomment when cassandra extension will support >= php7.2
 #    - php: 7.2
@@ -20,10 +20,10 @@ matrix:
 #    - php: 7.4
 #      env: COMPOSER_FLAGS="--prefer-stable --prefer-lowest"
     # symfony LTS versions
-    - php: 7.1
-      env: SYMFONY_REQUIRE="3.4.*"
-    - php: 7.1
-      env: SYMFONY_REQUIRE="4.4.*"
+#    - php: 7.1
+#      env: SYMFONY_REQUIRE="5.1.*"
+#    - php: 7.1
+#      env: SYMFONY_REQUIRE="5.2.*"
 
 before_install:
   # disable xdebug

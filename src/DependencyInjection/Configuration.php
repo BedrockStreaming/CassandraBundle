@@ -17,6 +17,7 @@ class Configuration implements ConfigurationInterface
      */
     public function getConfigTreeBuilder()
     {
+        
         $treeBuilder = new TreeBuilder('m6web_cassandra');
 
         if (method_exists($treeBuilder, 'getRootNode')) {

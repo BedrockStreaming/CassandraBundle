@@ -1,12 +1,12 @@
 <?php
 namespace M6Web\Bundle\CassandraBundle\EventDispatcher;
 
-use Symfony\Component\EventDispatcher\Event;
+use Symfony\Contracts\EventDispatcher\Event;
 
 /**
  * Class CassandraEvent
  */
-class CassandraEvent extends Event
+class CassandraEvent extends \Symfony\Contracts\EventDispatcher\Event
 {
     const EVENT_NAME = 'm6web.cassandra';
 
