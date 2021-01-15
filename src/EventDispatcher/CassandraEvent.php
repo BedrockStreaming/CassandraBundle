@@ -1,7 +1,7 @@
 <?php
 namespace M6Web\Bundle\CassandraBundle\EventDispatcher;
 
-use Symfony\Component\EventDispatcher\Event;
+use Symfony\Contracts\EventDispatcher\Event;
 
 /**
  * Class CassandraEvent

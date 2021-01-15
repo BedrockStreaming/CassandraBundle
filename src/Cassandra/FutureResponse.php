@@ -54,7 +54,7 @@ class FutureResponse implements Future
         $return = $this->future->get($timeout);
 
         $this->event->setExecutionStop();
-        $this->eventDispatcher->dispatch(CassandraEvent::EVENT_NAME, $this->event);
+        $this->eventDispatcher->dispatch($this->event, CassandraEvent::EVENT_NAME);
 
         return $return;
     }

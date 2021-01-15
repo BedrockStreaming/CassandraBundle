@@ -172,7 +172,7 @@ class Client extends test
             ->and($sessionMock = $this->getSessionMock())
             ->and($clusterMock->getMockController()->connect = $sessionMock)
             ->and($testedClass->setCluster($clusterMock))
-            ->and($testedClass->setEventDispatcher($eventDispatcherMock = new \mock\Symfony\Component\EventDispatcher\EventDispatcherInterface()))
+            ->and($testedClass->setEventDispatcher($eventDispatcherMock = new \mock\Symfony\Component\EventDispatcher\EventDispatcher()))
             ->and($testedClass->execute($statement = $this->getStatementMock()))
             ->and($execAsync = $testedClass->executeAsync($statement = $this->getStatementMock()))
             ->and($testedClass->prepare($cql = 'select * from mytable'))

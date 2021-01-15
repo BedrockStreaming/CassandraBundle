@@ -285,7 +285,7 @@ class Client implements Session
         }
 
         $event->setExecutionStop();
-        $this->eventDispatcher->dispatch(CassandraEvent::EVENT_NAME, $event);
+        $this->eventDispatcher->dispatch($event, CassandraEvent::EVENT_NAME);
 
         return $response;
     }
